@@ -24,14 +24,19 @@ cookies2 = {
 
 cookiesList = [cookies1, ]  # 多账号准备
 
+xmly_speed_cookie ='''_xmLog=xm_kfyn5itg692198; 1&_device=iPhone&C5D8B777-201A-479C-B7AC-B8BA5ADC9229&1.1.10; 1&_token=191084372&E05BBB60240NED25CD0345B7C50CAE4B946D667E164BB71A6945E03336FCAEEFB790BAEBE184130M329312FD3546968_; NSUP=42E33F03%2C41BA403A%2C1602028306432; XUM=C5D8B777-201A-479C-B7AC-B8BA5ADC9229; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone XR; idfa=6EF3E645-FAD6-4B47-BDDD-978DA2F2D216; impl=com.ximalaya.tingLite; ip=192.168.31.104; net-mode=WIFI; res=828%2C1792
+ _xmLog=xm_kg39l8wpkqknzj; 1&_device=iPhone&414C68E7-715F-475E-9776-2D89C4595066&1.1.10; 1&_token=260149230&ECEAD9D0240N6495943F0C58479D3E5257D56E082609E807B6255BE96E2672CDA8204559F19613M0349775CAAB9335_; NSUP=42E33EDE%2C41BA3F9B%2C1602309062656; XUM=414C68E7-715F-475E-9776-2D89C4595066; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone 6s Plus; idfa=414C68E7-715F-475E-9776-2D89C4595066; impl=com.ximalaya.tingLite; ip=240e:57d:1418:4599:da:408:100:0; net-mode=WIFI; res=1242%2C2208
+_xmLog=xm_kg3p14uihd7aqi;1&_device=iPad&653F94B8-410E-4C69-B4C0-41611C41B4D2&1.1.10;1&_token=260235678&E6CB9350340C69B013D876ED1BC00FEDA4BBF6DEF61B6D7159D5857895D82666839F109197D8130M38E411DCAD6CC22_;NSUP=42E33ED5%2C41BA3FBB%2C1602334359552;XUM=653F94B8-410E-4C69-B4C0-41611C41B4D2;ainr=0;c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1;device_model=iPad 4; idfa=E4B9A2E5-5B7D-4A8B-959F-120B6D8B8A2C;impl=com.ximalaya.tingLite;ip=192.168.31.68;net-mode=WIFI;res=640%2C960
+Cookie: _xmLog=xm_kgdvp6hrdrrzo9; 1&_device=iPhone&C8077270-DEA9-4D94-940B-D6203F1383C5&1.1.10; 1&_token=261793732&2D1DB430340N91220D343D863B9A6338B888C3B12D932567B042D3701381A02EEE753D9193F1174M7F15A0B45D1E595_; NSUP=; XUM=C8077270-DEA9-4D94-940B-D6203F1383C5; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone 5; idfa=00000000-0000-0000-0000-000000000000; impl=com.ximalaya.tingLite; ip=240e:3b9:1435:e380:f0:503:8046:ea14; net-mode=WIFI; res=640%2C1136
 
+'''
 
 
 xmly_bark_cookie='azjFQzUeTG5hVYx7cRJRTU'
 UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 iting/1.0.12 kdtunion_iting/1.0 iting(main)/1.0.12/ios_1"
 # 非iOS设备的需要的自行修改,自己抓包 与cookie形式类似
 
-
+iosrule=''
 def str2dict(str_cookie):
     if type(str_cookie) == dict:
         return str_cookie
@@ -46,18 +51,20 @@ def str2dict(str_cookie):
 
 
 
-iosrule=''
-if "XMLY_SPEED_COOKIE" in os.environ:
+
+'''if "XMLY_SPEED_COOKIE" in os.environ:
     """
     判断是否运行自GitHub action,"XMLY_SPEED_COOKIE" 该参数与 repo里的Secrets的名称保持一致
     """
     print("执行自GitHub action")
-    xmly_speed_cookie =os.environ["XMLY_SPEED_COOKIE"]
-    cookiesList = []  # 重置cookiesList
-    for line in xmly_speed_cookie.split('\n'):
-      if not line:
+    xmly_speed_cookie = os.environ["XMLY_SPEED_COOKIE"]
+    '''
+ 
+cookiesList = []  # 重置cookiesList
+for line in xmly_speed_cookie.split('\n'):
+    if not line:
        continue 
-      cookiesList.append(line)
+    cookiesList.append(line)
 
 if not cookiesList[0]:
     print("cookie为空 跳出X")
@@ -910,7 +917,13 @@ def pushmsg():
 	
 	
 	
+def m():
+    currentTimeMillis = int(time.time()*1000)-2
+    sign = hashlib.md5(('2'+'a45421662ad74842a3f3118aa474ac6c').encode()).hexdigest()
+    print(sign)
+##################################################################
 
+#http://113.96.156.166/pizza-category/activity/getAward?activtyId=gameTimeAward&currentTimeMillis=1602054131470&gameTime=6&signature=777203037112a37f8a4be0fb1b1cc592&uid=191084372
 
 def main(cookies):
     print("#"*20)
