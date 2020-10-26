@@ -903,6 +903,7 @@ def homehourred(cookies):
                             headers=headers, cookies=cookies)
        result = response.json()
        print(response.text)
+       time.sleep(1)
 def pushmsg():
   if xmly_bark_cookie.strip():
     purl = f'https://api.day.app/{xmly_bark_cookie}/喜马拉雅极速/{iosrule}'
@@ -938,16 +939,16 @@ def main(cookies):
     getOmnipotentCard(cookies)
     #stage_(cookies)
     bubble(cookies)
-    checkin(cookies)
+    #checkin(cookies)
     print("\n【答题】")
     ans_times = ans_getTimes(cookies)
 
     for i in range(ans_times["stamina"]):
         paperId, dateStr, lastTopicId = ans_start(cookies)
         ans_receive(cookies, paperId, lastTopicId, 1)
-        time.sleep(1)
+        time.sleep(2)
         ans_receive(cookies, paperId, lastTopicId, 2)
-        time.sleep(1)
+        time.sleep(2)
 
     if ans_times["remainingTimes"] > 0:
         print("[看视频回复体力]")
