@@ -1143,7 +1143,7 @@ def main(cookies):
     saveListenTime(cookies)
     card(cookies)
     #hand(cookies)
-    dati_taskrecord(cookies)
+    #dati_taskrecord(cookies)
     homehourred(cookies)
     #read(cookies, uid)
     reportTime(cookies)
@@ -1151,7 +1151,7 @@ def main(cookies):
     getOmnipotentCard(cookies)
     #stage_(cookies)
     bubble(cookies)
-    checkin(cookies)
+    #checkin(cookies)
     print("\n【答题】")
     ans_times = ans_getTimes(cookies)
 
