@@ -2,7 +2,7 @@ name: 喜马拉雅极速20201010
 
 on:
   schedule:
-    - cron: '*/30 * * * * '
+    - cron: '*/25 * * * * '
   watch:
     types: [started]
 jobs:
