@@ -11,9 +11,8 @@ from datetime import datetime
 from dateutil import tz
 import os
 
-# 喜马拉雅极速版加了bark通知，作者github https://github.com/Zero-S1/xmly_speed
-# 使用参考 xmly_speed.md
-# cookies填写
+# github 作者 https://github.com/Zero-S1/xmly_speed
+
 
 cookies1 = ""  # 字符串形式 都可以识别
 cookies2 = {
@@ -22,18 +21,15 @@ cookies2 = {
 
 
 
-cookiesList = [cookies1, ]  # 多账号准备
+cookiesList = [cookies1, ]  
 
-xmly_speed_cookie ='''_xmLog=xm_kfyn5itg692198; 1&_device=iPhone&C5D8B777-201A-479C-B7AC-B8BA5ADC9229&1.1.10; 1&_token=191084372&E05BBB60240NED25CD0345B7C50CAE4B946D667E164BB71A6945E03336FCAEEFB790BAEBE184130M329312FD3546968_; NSUP=42E33F03%2C41BA403A%2C1602028306432; XUM=C5D8B777-201A-479C-B7AC-B8BA5ADC9229; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone XR; idfa=6EF3E645-FAD6-4B47-BDDD-978DA2F2D216; impl=com.ximalaya.tingLite; ip=192.168.31.104; net-mode=WIFI; res=828%2C1792
- _xmLog=xm_kg39l8wpkqknzj; 1&_device=iPhone&414C68E7-715F-475E-9776-2D89C4595066&1.1.10; 1&_token=260149230&ECEAD9D0240N6495943F0C58479D3E5257D56E082609E807B6255BE96E2672CDA8204559F19613M0349775CAAB9335_; NSUP=42E33EDE%2C41BA3F9B%2C1602309062656; XUM=414C68E7-715F-475E-9776-2D89C4595066; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone 6s Plus; idfa=414C68E7-715F-475E-9776-2D89C4595066; impl=com.ximalaya.tingLite; ip=240e:57d:1418:4599:da:408:100:0; net-mode=WIFI; res=1242%2C2208
-_xmLog=xm_kg3p14uihd7aqi;1&_device=iPad&653F94B8-410E-4C69-B4C0-41611C41B4D2&1.1.10;1&_token=260235678&E6CB9350340C69B013D876ED1BC00FEDA4BBF6DEF61B6D7159D5857895D82666839F109197D8130M38E411DCAD6CC22_;NSUP=42E33ED5%2C41BA3FBB%2C1602334359552;XUM=653F94B8-410E-4C69-B4C0-41611C41B4D2;ainr=0;c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1;device_model=iPad 4; idfa=E4B9A2E5-5B7D-4A8B-959F-120B6D8B8A2C;impl=com.ximalaya.tingLite;ip=192.168.31.68;net-mode=WIFI;res=640%2C960
-_xmLog=xm_kgdvp6hrdrrzo9; 1&_device=iPhone&C8077270-DEA9-4D94-940B-D6203F1383C5&1.1.10; 1&_token=261793732&2D1DB430340N91220D343D863B9A6338B888C3B12D932567B042D3701381A02EEE753D9193F1174M7F15A0B45D1E595_; NSUP=; XUM=C8077270-DEA9-4D94-940B-D6203F1383C5; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone 5; idfa=00000000-0000-0000-0000-000000000000; impl=com.ximalaya.tingLite; ip=240e:3b9:1435:e380:f0:503:8046:ea14; net-mode=WIFI; res=640%2C1136
-_xmLog=xm_kh098gxnxu4gjn; 1&_device=iPhone&C5D8B777-201A-479C-B7AC-B8BA5ADC9229&1.1.10; 1&_token=264729242&16311620340N750C68CA608ED5A65C224C59E93F67F16EA13C98A16004312CB647E758628B9E139MD1DE12B448EFA0F_; NSUP=42E289B8%2C41B8CE3E%2C1604303978496; XUM=C5D8B777-201A-479C-B7AC-B8BA5ADC9229; ainr=0; c-oper=%E8%81%94%E9%80%9A; channel=ios-b1; device_model=iPhone XR; idfa=00000000-0000-0000-0000-000000000000; impl=com.ximalaya.tingLite; ip=240e:57d:2139:14dc:76:8307:100::; net-mode=4G; res=828%2C1792
-_xmLog=xm_kh0nj2wk5kzirm; 1&_device=iPhone&414C68E7-715F-475E-9776-2D89C4595066&1.1.11; 1&_token=80150810&BE9F5F90240N020DE4ABD372DBE9A8EB1A2609E94785C0B9CA1ED9C475AF543B08AC2532C6A9161MF14A764E27F1420_; NSUP=42E33EDB%2C41BA3FA4%2C1602332786688; XUM=414C68E7-715F-475E-9776-2D89C4595066; ainr=0; c-oper=%E6%9C%AA%E7%9F%A5; channel=ios-b1; device_model=iPhone 6s Plus; idfa=EB8686CB-8DC7-463A-95F4-93F8A9F3FD13; impl=com.ximalaya.tingLite; ip=172.16.209.2; net-mode=4G; res=1242%2C2208
+xmly_speed_cookie ='''
 '''
 
+xmly_bark_cookie=''
 
-xmly_bark_cookie='azjFQzUeTG5hVYx7cRJRTU'
+
+
 UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 iting/1.0.12 kdtunion_iting/1.0 iting(main)/1.0.12/ios_1"
 # 非iOS设备的需要的自行修改,自己抓包 与cookie形式类似
 
@@ -54,22 +50,18 @@ def str2dict(str_cookie):
 
 
 
-'''if "XMLY_SPEED_COOKIE" in os.environ:
-    """
-    判断是否运行自GitHub action,"XMLY_SPEED_COOKIE" 该参数与 repo里的Secrets的名称保持一致
-    """
-    print("执行自GitHub action")
+if "XMLY_SPEED_COOKIE" in os.environ:
     xmly_speed_cookie = os.environ["XMLY_SPEED_COOKIE"]
-    '''
+
  
-cookiesList = []  # 重置cookiesList
+cookiesList = []
 for line in xmly_speed_cookie.split('\n'):
     if not line:
        continue 
     cookiesList.append(line)
-
+if (len(cookiesList)==0):
+    exit()
 if not cookiesList[0]:
-    print("cookie为空 跳出X")
     exit()
 mins = int(time.time())
 date_stamp = (mins-57600) % 86400
@@ -83,7 +75,7 @@ print("当前时间戳", mins)
 if "XMLY_BARK_COOKIE" in os.environ:
     xmly_bark_cookie = os.environ["XMLY_BARK_COOKIE"]
 
-def listenData(cookies):
+def listenData(cookies,uid):
     headers = {
         'User-Agent': UserAgent,
         'Host': 'm.ximalaya.com',
@@ -420,7 +412,7 @@ def ad_score(cookies, businessType, taskId):
 
 
 
-def bubble(cookies):
+def bubble(cookies,uid):
     print("\n【听书收集气泡】")
     headers = {
         'User-Agent': UserAgent,
@@ -662,7 +654,7 @@ def getOmnipotentCard(cookies):
     
 
 
-def reportTime(cookies):
+def reportTime(cookies,uid):
     print("提交服务器本地时长\n")
     headers = {
         'User-Agent': UserAgent,
@@ -686,7 +678,7 @@ def reportTime(cookies):
 
 
 
-def account(cookies):
+def account(cookies,j):
     print("\n【打印账号收益】")
     headers = {
         'Host': 'm.ximalaya.com',
@@ -704,12 +696,11 @@ def account(cookies):
     result = response.json()
     print(result)
     global iosrule
-    global j
     iosrule+=f"""【账号{j}】当前剩余:{result["total"]/10000}今日获得:{result["todayTotal"]/10000}累计获得:{result["historyTotal"]/10000}"""+'\n'
     
 
     
-def saveListenTime(cookies):
+def saveListenTime(cookies,uid):
     print("\n【保存本地收听时长】")
     headers = {
         'User-Agent': UserAgent,
@@ -755,7 +746,7 @@ def dati_taskrecord(cookies):
                            headers=headers, cookies=cookies)
            print(response.text)
            
-def homehourred(cookies):
+def homehourred(cookies,uid):
   print("\n【首页红包信息】")
   headers = {
         'User-Agent': UserAgent,}
@@ -799,37 +790,41 @@ def m():
     print(sign)
 ##################################################################
 
-#http://113.96.156.166/pizza-category/activity/getAward?activtyId=gameTimeAward&currentTimeMillis=1602054131470&gameTime=6&signature=777203037112a37f8a4be0fb1b1cc592&uid=191084372
 
-def main(cookies):
+def main(cookies,uid):
     print("#"*20)
     print("\n")
-    homehourred(cookies)
-    listenData(cookies)
-    saveListenTime(cookies)
-    reportTime(cookies)
-    bubble(cookies)
+    homehourred(cookies,uid)
+    listenData(cookies,uid)
+    saveListenTime(cookies,uid)
+    reportTime(cookies,uid)
+    bubble(cookies,uid)
     card(cookies)
     getOmnipotentCard(cookies)
-    #dati_taskrecord(cookies)
+    dati_taskrecord(cookies)
     ans_main(cookies)
     lottery_info(cookies)
 
     print("\n")
 
-j=0
-for i in cookiesList:
+def start():
+  j=0
+  for i in cookiesList:
     j+=1
-   # if j!=6:
-    	#continue
+    if j<6:
+    	continue
     	
     print(">>>>>>>>>【账号"+str(j)+"开始】")
     cookies = str2dict(i)
     uid = cookies["1&_token"].split("&")[0]
     uuid = cookies["XUM"]
-    main(cookies)
-    account(cookies)
-pushmsg()
+    main(cookies,uid)
+    account(cookies,j)
+  pushmsg()
 
     
-    
+def main_handler(event, context):
+    return start()
+
+if __name__ == '__main__':
+       start()
