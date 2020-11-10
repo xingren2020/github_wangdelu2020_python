@@ -21,17 +21,14 @@ cookies2 = {
 
 
 
-cookiesList = [cookies1, ]  
+cookiesList = []  
 
-xmly_speed_cookie ='''
-'''
+xmly_speed_cookie =''
 
 xmly_bark_cookie=''
 
-
-
 UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 iting/1.0.12 kdtunion_iting/1.0 iting(main)/1.0.12/ios_1"
-# 非iOS设备的需要的自行修改,自己抓包 与cookie形式类似
+
 
 iosrule=''
 def str2dict(str_cookie):
@@ -50,37 +47,42 @@ def str2dict(str_cookie):
 
 
 
-if "XMLY_SPEED_COOKIE" in os.environ:
-    xmly_speed_cookie = os.environ["XMLY_SPEED_COOKIE"]
+    
+def check():
+   
+   
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
 
- 
-cookiesList = []
-for line in xmly_speed_cookie.split('\n'):
-    if not line:
-       continue 
-    cookiesList.append(line)
-if (len(cookiesList)==0):
-    exit()
-if not cookiesList[0]:
-    exit()
-mins = int(time.time())
-date_stamp = (mins-57600) % 86400
-#print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-print(datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-_datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
-print(_datatime)
-print("今日已过秒数: ", date_stamp)
-print("当前时间戳", mins)
+   
+   global xmly_speed_cookie
+   global xmly_bark_cookie
+   if "XMLY_BARK_COOKIE" in os.environ:
+     xmly_bark_cookie = os.environ["XMLY_BARK_COOKIE"]
+   if "XMLY_SPEED_COOKIE" in os.environ:
+      xmly_speed_cookie = os.environ["XMLY_SPEED_COOKIE"]
+      for line in xmly_speed_cookie.split('\n'):
+        if not line:
+          continue 
+        cookiesList.append(line.strip())
+   elif xmly_speed_cookie:
+       for line in xmly_speed_cookie.split('\n'):
+         if not line:
+            continue 
+         cookiesList.append(line.strip())
+   else:
+     print('Task is over.')
+     exit()
 
-if "XMLY_BARK_COOKIE" in os.environ:
-    xmly_bark_cookie = os.environ["XMLY_BARK_COOKIE"]
-
+    
 def listenData(cookies,uid):
     headers = {
         'User-Agent': UserAgent,
         'Host': 'm.ximalaya.com',
         'Content-Type': 'application/json',
     }
+    mins = int(time.time())
+    date_stamp = (mins-57600) % 86400
+    _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
     listentime = date_stamp
     print(listentime//60)
     currentTimeMillis = int(time.time()*1000)-2
@@ -239,7 +241,7 @@ def rsa_encrypt(s, pubkey_str):
 
 pubkey_str = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVhaR3Or7suUlwHUl2Ly36uVmboZ3+HhovogDjLgRE9CbaUokS2eqGaVFfbxAUxFThNDuXq/fBD+SdUgppmcZrIw4HMMP4AtE2qJJQH/KxPWmbXH7Lv+9CisNtPYOlvWJ/GHRqf9x3TBKjjeJ2CjuVxlPBDX63+Ecil2JR9klVawIDAQAB"
 
-def lottery_info(cookies):
+def lottery_info(cookies,uid):
   print("\n【幸运大转盘】")
   headers = {
         'Host': 'm.ximalaya.com',
@@ -378,7 +380,7 @@ def task_label(cookies):
 
 
 
-def ad_score(cookies, businessType, taskId):
+def ad_score(cookies, businessType, taskId,uid):
     print("\n【听书点击广告收益】")
     headers = {
         'Host': 'm.ximalaya.com',
@@ -435,9 +437,9 @@ def bubble(cookies,uid):
          print(i["id"])
          receive(cookies, i["id"])
          time.sleep(1)
-         ad_score(cookies, 7, i["id"])
+         ad_score(cookies, 7, i["id"],uid)
       for i in result["data"]["expiredBubbles"]:
-         ad_score(cookies, 6, i["id"])
+         ad_score(cookies, 6, i["id"],uid)
     except Exception as e:
         msg=str(e)
         print(msg)
@@ -497,7 +499,7 @@ def card_draw2(cookies, drawRecordIdList):
 
 
 
-def get_card_coin(cookies, themeId, cardIdList):
+def get_card_coin(cookies, themeId, cardIdList,uid):
     print("\n【普通卡集卡齐全兑换】")
     headers = {
         'Host': 'm.ximalaya.com',
@@ -615,12 +617,12 @@ def card(cookies):
             print("卡片凑齐满足兑换金币")
             cardIdList = [i["recordId"] for i in recordIdList]
             print('卡片类型'+str(themeId), cardIdList)
-            get_card_coin(cookies, themeId, cardIdList)
+            get_card_coin(cookies, themeId, cardIdList,uid)
     except Exception as e:
           msg=str(e)
           print(msg)
 
-def getOmnipotentCard(cookies):
+def getOmnipotentCard(cookies,uid):
    print("\n 【获得万能卡信息】")
    headers = {
         'User-Agent': UserAgent,
@@ -663,6 +665,9 @@ def reportTime(cookies,uid):
         'Origin': 'https://m.ximalaya.com',
         'Referer': 'https://m.ximalaya.com/xmds-node-spa/apps/speed-growth-activities/card-collection/home',
     }
+    mins = int(time.time())
+    date_stamp = (mins-57600) % 86400
+    _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
     listenTime = mins-date_stamp
     data = {"listenTime": listenTime,
             "signData": rsa_encrypt(f"{_datatime}{listenTime}{uid}", pubkey_str), }
@@ -707,6 +712,9 @@ def saveListenTime(cookies,uid):
         'Host': 'mobile.ximalaya.com',
         'Content-Type': 'application/x-www-form-urlencoded',
     }
+    mins = int(time.time())
+    date_stamp = (mins-57600) % 86400
+    _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
     listentime = date_stamp
     print(listentime//60)
     currentTimeMillis = int(time.time()*1000)-2
@@ -754,7 +762,6 @@ def homehourred(cookies,uid):
   response = requests.get(f'http://mobile.ximalaya.com/pizza-category/activity/getAward?activtyId=indexSegAward&ballKey={uid}&currentTimeMillis={currentTimeMillis}&sawVideoSignature={currentTimeMillis}+{uid}&version=2',
                             headers=headers, cookies=cookies)
 
-    
   try:
     print(response.text)
     result = response.json()
@@ -770,9 +777,9 @@ def homehourred(cookies,uid):
         print(msg)
         
 def pushmsg():
-  print("\n【通知汇总】")
   if xmly_bark_cookie.strip():
-    purl = f'https://api.day.app/{xmly_bark_cookie}/喜马拉雅极速/{iosrule}'
+    print("\n【通知汇总】")
+    purl = f'https://api.day.app/{xmly_bark_cookie}/xmly/{iosrule}'
     response = requests.post(purl)
     print(response.text)
  
@@ -800,20 +807,20 @@ def main(cookies,uid):
     reportTime(cookies,uid)
     bubble(cookies,uid)
     card(cookies)
-    getOmnipotentCard(cookies)
-    dati_taskrecord(cookies)
+    getOmnipotentCard(cookies,uid)
+    #dati_taskrecord(cookies)
     ans_main(cookies)
-    lottery_info(cookies)
+    lottery_info(cookies,uid)
 
     print("\n")
 
 def start():
+  check()
   j=0
   for i in cookiesList:
     j+=1
-    if j<6:
-    	continue
-    	
+    #if j<6:
+    	#continue
     print(">>>>>>>>>【账号"+str(j)+"开始】")
     cookies = str2dict(i)
     uid = cookies["1&_token"].split("&")[0]
