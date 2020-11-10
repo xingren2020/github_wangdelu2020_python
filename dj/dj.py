@@ -107,7 +107,7 @@ def dj_mobaoav(url):
         
 def check(st,ck,ls):
    if st in os.environ:
-      ck = os.environ[str]
+      ck = os.environ[st]
       for line in ck.split('\n'):
         if not line:
           continue 
