@@ -27,6 +27,8 @@ xmly_speed_cookie =''
 
 xmly_bark_cookie=''
 
+
+
 UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 iting/1.0.12 kdtunion_iting/1.0 iting(main)/1.0.12/ios_1"
 
 
@@ -561,7 +563,41 @@ def exchangeCard(cookies, toCardAwardId, fromId):
         msg=str(e)
         print(msg)
 
-
+def fragmentExchange(cookies, toCardAwardId):
+    print("\n【碎片】")
+    headers = {
+        'User-Agent': UserAgent,
+        'Content-Type': 'application/json;charset=utf-8',
+        'Host': 'm.ximalaya.com',
+        'Origin': 'https://m.ximalaya.com',
+        'Referer': 'https://m.ximalaya.com/xmds-node-spa/apps/speed-growth-activities/card-collection/home',
+    }
+    response = requests.get(
+        'https://m.ximalaya.com/speed/web-earn/card/fragmentInfo', headers=headers, cookies=cookies)
+    try:
+      #print(response.text)
+      obj=response.json()
+      fraglist=obj['data']
+      if len(fraglist)<2:
+      	return 
+      fromRecordIdList=[fraglist[0],fraglist[1]]
+      print('碎片id:',fromRecordIdList)
+      data = {
+        "toCardAwardId": toCardAwardId,
+        "fromRecordIdList":fromRecordIdList,
+        "exchangeType": 2
+      }
+      print('碎片兑换卡片toCardAwardId',toCardAwardId)
+    except Exception as e:
+      msg=str(e)
+      print(msg)
+    response = requests.post('https://m.ximalaya.com/speed/web-earn/card/exchangeCard',
+                             headers=headers, cookies=cookies, data=json.dumps(data))
+    try:
+       print('碎片兑换',response.text)
+    except Exception as e:
+        msg=str(e)
+        print(msg)
 def card(cookies):
     print("\n【开始集卡】")
     headers = {
@@ -577,7 +613,7 @@ def card(cookies):
     response = requests.get(
         'https://m.ximalaya.com/speed/web-earn/card/userCardInfo', headers=headers, cookies=cookies)
     try:
-      print(response.text)
+      #print(response.text)
       userCardsList = response.json()["data"]["userCardsList"]
       drawRecordIdList = response.json()["data"]["drawRecordIdList"]
       if drawRecordIdList:
@@ -585,11 +621,12 @@ def card(cookies):
          card_draw2(cookies,drawRecordIdList)
     
       allIds = set([i["id"] for i in userCardsList if i["id"] != 1])
-      print('自己的非万能卡',allIds)
+      #print('自己的非万能卡',allIds)
       delt = set(range(2, 19))-allIds
-      print('自己没有获取的卡',delt)
+      #print('自己没有获取的卡',delt)
+      fragmentExchange(cookies,list(delt)[0])
       OmnipotentCard = [i for i in userCardsList if i["id"] == 1]
-      print('自己万能卡',OmnipotentCard)
+      #print('自己万能卡',OmnipotentCard)
       if delt and OmnipotentCard:
          exchangeCard(cookies, choice(list(delt)),
                      OmnipotentCard[0]["recordId"])
@@ -598,13 +635,21 @@ def card(cookies):
       shangsiji4 = [i for i in userCardsList if i["id"] in [4, 5, 6, 7]]
       shuiguolao5 = [i for i in userCardsList if i["id"] in [8, 9, 10, 11, 12]]
       minghuahui6 = [i for i in userCardsList if i["id"] in [13, 14, 15, 16, 17, 18]]
+      sidamingzhu4 = [i for i in userCardsList if i["id"] in [19, 20, 21, 22]]
+      dongwuwenhua5 = [i for i in userCardsList if i["id"] in [23,24, 25, 26, 27]]
+      jiajie5 = [i for i in userCardsList if i["id"] in [28,29, 30, 31, 32]]
+      dibiao5 = [i for i in userCardsList if i["id"] in [33,34, 35, 36, 37]]
       _map = {
         2: [2, 3],
         3: [4, 5, 6, 7],
         4: [8, 9, 10, 11, 12],
-        5: [13, 14, 15, 16, 17, 18]
+        5: [13, 14, 15, 16, 17, 18],
+        6: [19, 20, 21, 22],
+        7: [23, 24, 25, 26, 27],
+        8: [28, 29, 30, 31, 32],
+        9: [33, 34, 35, 36, 37],
         }
-      for i in [jixiangwu2,shangsiji4,shuiguolao5,minghuahui6]:
+      for i in [jixiangwu2,shangsiji4,shuiguolao5,minghuahui6,sidamingzhu4,dongwuwenhua5,jiajie5,dibiao5]:
         if not i:
             continue
         card_theme = i
@@ -641,6 +686,8 @@ def getOmnipotentCard(cookies,uid):
         return
      token = requests.get('https://m.ximalaya.com/speed/web-earn/card/token/1',
                          headers=headers, cookies=cookies,).json()["data"]["id"]
+     mins = int(time.time())
+     date_stamp = (mins-57600) % 86400                  
      data = {
         "listenTime": mins-date_stamp,
         "signData": rsa_encrypt(f"{_datatime}{token}{uid}", pubkey_str),
