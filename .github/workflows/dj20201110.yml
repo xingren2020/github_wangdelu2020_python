@@ -1,0 +1,30 @@
+name: dj20201110
+
+on:
+  schedule:
+    - cron: '*/90 * * * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./dj/requirements.txt 
+        
+      - name: 'run dj20201110' 
+        run: python3 ./dj/dj.py 
+        env:
+            DJ_COOKIES1: ${{ secrets.DJ_COOKIES1 }}
+            DJ_COOKIES2: ${{ secrets.DJ_COOKIES2 }}
+    
+
+   
