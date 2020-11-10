@@ -22,5 +22,6 @@ jobs:
         
       - name: 'run 喜马拉雅极速20201010' 
         run: python3 ./xmly/xmly2.py 
-
-   
+        env:
+            XMLY_SPEED_COOKIE: ${{ secrets.XMLY_SPEED_COOKIE }}
+            XMLY_BARK_COOKIE: ${{ secrets.XMLY_BARK_COOKIE }}
