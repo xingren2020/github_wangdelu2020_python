@@ -76,7 +76,7 @@ def check():
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if "WETCARD_YINYUE_COOKIE" in os.environ:
       wetcard_yinyue_cookie = os.environ["WETCARD_YINYUE_COOKIE"]
-   elif wetcard_yinyue_cookie:
+   if wetcard_yinyue_cookie:
        for line in wetcard_yinyue_cookie.split('\n'):
          if not line:
             continue 
