@@ -71,7 +71,7 @@ def jdFruit():
       '''
       print(msg)
       #助力好友一下
-      #masterHelpShare(farmInfo)
+      masterHelpShare(farmInfo)
       if (farmInfo['treeState'] ==2 or farmInfo['treeState'] == 3):
         	msg=f'''京东账号x,昵称x,用户名y,【提醒⏰】{farmInfo['farmUserPro']['name']}水果已可领取'''
         	print(msg)
