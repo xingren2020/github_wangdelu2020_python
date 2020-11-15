@@ -1,0 +1,33 @@
+name: djj_fruits
+
+on:
+  schedule:
+    - cron: '17,21,23,4,10 * * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./djj/requirements.txt 
+        
+      - name: 'run 喜马拉雅极速20201010' 
+        run: python3 ./djj/fruits.py 
+        env:
+            DJJ_SHARECODE: ${{ secrets.DJJ_SHARECODE }}
+            DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
+            DJJ_DJJ_COOKIE: $
+            {{ secrets.DJJ_DJJ_COOKIE }}
+            DJJ_SEVER_JIANG: $
+            {{ secrets.DJJ_SEVER_JIANG }}
+            
+            
