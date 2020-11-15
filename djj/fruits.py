@@ -11,7 +11,6 @@ import os
 
 
 djj_djj_cookie=''
-
 djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
@@ -987,9 +986,6 @@ def start():
    j=0
    for count in cookiesList:
      j+=1
-     if j!=1:
-       continue
-     print(count)
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
