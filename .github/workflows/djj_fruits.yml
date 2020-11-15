@@ -2,7 +2,7 @@ name: djj_fruits
 
 on:
   schedule:
-    - cron: '17,21,23,4,10 * * * '
+    - cron: '1 17,21,23,4,10 * * * '
   watch:
     types: [started]
 jobs:
