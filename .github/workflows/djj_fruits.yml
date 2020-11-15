@@ -25,9 +25,7 @@ jobs:
         env:
             DJJ_SHARECODE: ${{ secrets.DJJ_SHARECODE }}
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
-            DJJ_DJJ_COOKIE: $
-            {{ secrets.DJJ_DJJ_COOKIE }}
-            DJJ_SEVER_JIANG: $
-            {{ secrets.DJJ_SEVER_JIANG }}
+            DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
+            DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
             
             
