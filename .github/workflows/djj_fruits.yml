@@ -20,7 +20,7 @@ jobs:
       - name: 'Install requirements'
         run: pip install -r ./djj/requirements.txt 
         
-      - name: 'run 喜马拉雅极速20201010' 
+      - name: 'run djj_fruits' 
         run: python3 ./djj/fruits.py 
         env:
             DJJ_SHARECODE: ${{ secrets.DJJ_SHARECODE }}
