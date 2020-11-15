@@ -46,7 +46,7 @@ def dj_boxTask(url):
    msg='【宝箱】'
    response = requests.get('https://dj.palmestore.com/zycl/gold/box?'+dj_cookies2).text
    pp=re.findall(r'data-id=(.*)data-status',response)
-   pp=re.findall('\d+',pp[0])[0]
+   pp=re.findall(r'\d+',pp[0])[0]
    response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId='+str(pp))
    try:
       st=response.text.encode('ascii').decode('unicode_escape')
