@@ -42,13 +42,16 @@ def dj_sign(url):
     print(msg)
 
 def dj_boxTask(url):
-    print('\n宝箱')
-    msg='【宝箱】'
-    response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId=51')
-    try:
+   print('\n宝箱')
+   msg='【宝箱】'
+   response = requests.get('https://dj.palmestore.com/zycl/gold/box?'+dj_cookies2).text
+   pp=re.findall(r'data-id=(.*)data-status',response)
+   pp=re.findall('\d+',pp[0])[0]
+   response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId='+str(pp))
+   try:
       st=response.text.encode('ascii').decode('unicode_escape')
       print(st)
-    except Exception as e:
+   except Exception as e:
         msg+=str(e)
         print(msg)
 def dj_draw(url):
