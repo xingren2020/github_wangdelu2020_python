@@ -2,14 +2,11 @@ import requests
 import json
 import os
 import re
-
+#by 红鲤鱼绿鲤鱼与驴 2020.11
 cookiesList1 = []
 cookiesList2 = []
 headers={"User-Agent": "iReaderFast/3.0.0 (iPhone; iOS 12.4; Scale/2.00)"}
-
 dj_cookies1=''
-
-
 dj_cookies2=''
 
 
@@ -46,13 +43,7 @@ def dj_sign(url):
 def dj_boxTask(url):
    print('\n宝箱')
    msg='【宝箱】'
-   response = requests.get('https://dj.palmestore.com/zycl/gold/box?'+dj_cookies2).text
-   print(response)
-   pp=re.findall(r'data-id=\\"(.*)\\" data-status',response)
-   print(pp)
-   pp=pp[0]
-   print(pp)
-   response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId='+str(pp))
+   response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId=139')
    try:
       st=response.text.encode('ascii').decode('unicode_escape')
       print(st)
