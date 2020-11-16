@@ -1,0 +1,25 @@
+name: djj_Add_code
+
+on:
+
+  schedule:
+    - cron: '1 5,10 2,11,21 * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./djj/requirements.txt 
+        
+      - name: 'run djj_Add_code' 
+        run: python3 ./djj/Add_code.py
