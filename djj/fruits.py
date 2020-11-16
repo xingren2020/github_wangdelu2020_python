@@ -9,7 +9,7 @@ from datetime import datetime
 from dateutil import tz
 import os
 
-
+#从lxk库学习来的，仅仅学习和测试，by红鲤鱼绿鲤鱼和驴
 djj_djj_cookie=''
 djj_sharecode=''
 djj_bark_cookie=''
@@ -19,10 +19,9 @@ djj_sever_jiang=''
 
 
 
-
+randomCount=20
 #以上参数需要远程设置，以下为默认参数
 JD_API_HOST = 'https://api.m.jd.com/client.action'
-urlSchema = 'openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%'
 headers={
       'UserAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
 }
@@ -31,6 +30,11 @@ isFruitFinished=False
 jdFruitBeanCard='false'#您设置的是使用水滴换豆卡，且背包有水滴换豆卡, 跳过10次浇水任务
 Defalt_ShareCode= ['8b4f04a07a21445a9a7da6ddb4159427',
 'ae6488dc5f0c4669bfa432b9bc884191','268e797816f340bc9ad3656fa249d1a6']#读取参数djj_sharecode为空，开始读取默认参数
+
+
+codeurl='http://api.turinglabs.net/api/v1/jd/farm/read/'
+
+
 def TotalBean(cookies,checkck):
    print('检验过期')
    signmd5=False
@@ -70,8 +74,6 @@ def jdFruit():
       【已成功兑换水果】{str(farmInfo['farmUserPro']['winTimes'])}次
       '''
       print(msg)
-      #助力好友一下
-      masterHelpShare(farmInfo)
       if (farmInfo['treeState'] ==2 or farmInfo['treeState'] == 3):
         	msg=f'''京东账号x,昵称x,用户名y,【提醒⏰】{farmInfo['farmUserPro']['name']}水果已可领取'''
         	print(msg)
@@ -94,6 +96,8 @@ def jdFruit():
              print(f'''
       【被水滴砸中】获得{goalResult['addEnergy']}g💧
       ''')
+      #助力好友一下
+      masterHelpShare(farmInfo)
       doDailyTask(farmInfo)
       getAwardInviteFriend(farmInfo)
       
@@ -210,13 +214,13 @@ def doDailyTask(farmInfo):
            print(f'''给{farmTask['waterFriendTaskInit']['waterFriendMax']}个好友浇水任务已完成''')
       clockIn()
       executeWaterRains(farmTask)
-      getExtraAward()
       doTenWater(farmTask,farmInfo)
       doTenWaterAgain(farmInfo)#再次浇水
       getFirstWaterAward(farmTask)#领取首次浇水奖励
       getTenWaterAward(farmTask)#领取10浇水奖励
       getWaterFriendGotAward(farmTask)#领取为2好友浇水奖励
       turntableFarm(farmInfo)#天天抽奖得好礼
+      getExtraAward()
    except Exception as e:
       msg+=str(e)
       print(msg)
@@ -612,7 +616,9 @@ def predictionFruit():
    
    farmTask=taskInitForFarm()
    farmInfo=initForFarm()
-   #print(farmInfo)
+  # print(farmInfo)
+   #print('\n')
+   #print(farmTask)
    if (farmInfo['code']!='0'):
      print('获取农场数据错误')
      return 
@@ -621,7 +627,7 @@ def predictionFruit():
     #今天到到目前为止，浇了多少次水
    msg += f'''【今日共浇水】{waterEveryDayT}次\n'''
    msg += f'''【剩余 水滴】{farmInfo['farmUserPro']['totalEnergy']}g💧\n'''
-   msg += f'''【水果🍉进度】{round(((farmInfo['farmUserPro']['treeEnergy'] / farmInfo['farmUserPro']['treeTotalEnergy']) * 100),2)}%，已浇水{farmInfo['farmUserPro']['treeEnergy'] / 10}次,还需{(farmInfo['farmUserPro']['treeTotalEnergy'] - farmInfo['farmUserPro']['treeEnergy']) / 10}次\n'''
+   msg += f'''【水果🍉进度】{round(((farmInfo['farmUserPro']['treeEnergy'] / farmInfo['farmUserPro']['treeTotalEnergy']) * 100),2)}%，果树已获取{farmInfo['farmUserPro']['treeEnergy']}能量,还需{(farmInfo['farmUserPro']['treeTotalEnergy'] - farmInfo['farmUserPro']['treeEnergy'])}能量\n'''
    
    
    
@@ -652,7 +658,7 @@ def predictionFruit():
    pretime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
    msg += f'''【预测】{tm}天之后({pretime}日)可兑换水果🍉'''
    print(msg)
-   pushmsg('京东农场',msg)
+   #pushmsg('京东农场',msg)
 
 
 
@@ -901,10 +907,15 @@ def inviteFriend(code):
    inviteFriendRes=iosrule('initForFarm',body)
    return inviteFriendRes
 
-
-
-
-
+def readShareCode():
+   url=f'''{codeurl}{randomCount}/'''
+   try:
+      readShareCodeRes=json.loads(requests.get(url).text)
+      print(f'''随机取个{randomCount}码放到您固定的互助码后面''')
+      return readShareCodeRes
+   except Exception as e:
+    	pass
+            
 def shareCodesFormat():
    newShareCodes = []
   # print(ShareCode)
@@ -914,9 +925,14 @@ def shareCodesFormat():
          if not line:
           continue 
          newShareCodes.append(line)
+         
    else:
         print('Github助力码参数读取空，开始读取默认助力码')
-        newShareCodes =Defalt_ShareCode
+        readShareCodeRes = readShareCode();
+        #print(readShareCodeRes)
+        if (readShareCodeRes and readShareCodeRes['code'] == 200):
+            #print(readShareCodeRes['data'])
+            newShareCodes=Defalt_ShareCode+readShareCodeRes['data']
             
    print(f'''京东账号将要助力的好友{newShareCodes}''')
    return newShareCodes
@@ -928,6 +944,9 @@ def iosrule(mod,body={}):
    except Exception as e:
       print(f'''初始化{mode}任务:''', str(e))
       
+      
+     
+
       
 def check():
    print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
@@ -982,10 +1001,12 @@ def DJJ_main():
    
 def start():
    check()
-   #print(cookiesList)
    j=0
    for count in cookiesList:
      j+=1
+     #if j!=1:
+      # continue
+     print(count)
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
