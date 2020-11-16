@@ -36,7 +36,7 @@ def dj_sign(url):
     response = requests.get('https://dj.palmestore.com/zycl/sign/window?'+url)
     try:
       st=response.text.encode('ascii').decode('unicode_escape')
-      print(st)
+      #print(st)
       msg+='签到'+re.findall(r'签到(.*)金币<',st)[0]+'\n'
       msg+='已连续签到'+re.findall(r'已连续签到<i>(\d+)<\\\/i>',st)[0]+'天'
     except Exception as e:
@@ -47,7 +47,10 @@ def dj_boxTask(url):
    print('\n宝箱')
    msg='【宝箱】'
    response = requests.get('https://dj.palmestore.com/zycl/gold/box?'+dj_cookies2).text
-   pp=re.findall(r'data-id=\\"(.*)\\" data-status',response)[0]
+   print(response)
+   pp=re.findall(r'data-id=\\"(.*)\\" data-status',response)
+   print(pp)
+   pp=pp[0]
    print(pp)
    response = requests.get('https://dj.palmestore.com/zycl/gold/receive?'+url+'&type=boxTask&incrId='+str(pp))
    try:
