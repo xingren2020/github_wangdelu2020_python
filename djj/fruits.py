@@ -9,18 +9,13 @@ import sys
 from datetime import datetime
 from dateutil import tz
 import os
+#by  红鲤鱼绿鲤鱼与驴，学习与测试用
 
 
-djj_djj_cookie=''
 djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
-
-
-
-
-
-
+djj_djj_cookie=''
 #以上参数需要远程设置，以下为默认参数
 JD_API_HOST = 'https://api.m.jd.com/client.action'
 urlSchema = 'openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%'
@@ -28,6 +23,7 @@ headers={
       'UserAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
 }
 cookiesList=[]
+result=''
 isFruitFinished=False
 jdFruitBeanCard='false'#您设置的是使用水滴换豆卡，且背包有水滴换豆卡, 跳过10次浇水任务
 Defalt_ShareCode= ['8b4f04a07a21445a9a7da6ddb4159427',
@@ -46,6 +42,7 @@ def TotalBean(cookies,checkck):
        print(ckresult)
        if json.dumps(ckresult).find(checkck)>0:
            signmd5=True
+           loger(f'''【京东{checkck}】''')
        else:
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
@@ -60,17 +57,15 @@ def TotalBean(cookies,checkck):
 
 
 def jdFruit():
-   msg='水果'
-   print('\n'+msg)
+   msg=''
+   print('水果\n')
    farmInfo=initForFarm()
    try:
       if (farmInfo['farmUserPro']):
-       msg+= f'''
-      【水果名称】{farmInfo['farmUserPro']['name']}
-      【互助码】{farmInfo['farmUserPro']['shareCode']}
-      【已成功兑换水果】{str(farmInfo['farmUserPro']['winTimes'])}次
-      '''
-      print(msg)
+       msg+= f'''【水果名称】{farmInfo['farmUserPro']['name']}
+【互助码】{farmInfo['farmUserPro']['shareCode']}
+【已成功兑换水果】{str(farmInfo['farmUserPro']['winTimes'])}次'''
+      loger(msg)
       #助力好友一下
       masterHelpShare(farmInfo)
       if (farmInfo['treeState'] ==2 or farmInfo['treeState'] == 3):
@@ -617,12 +612,12 @@ def predictionFruit():
    if (farmInfo['code']!='0'):
      print('获取农场数据错误')
      return 
-
+   
    waterEveryDayT =farmTask['totalWaterTaskInit']['totalWaterTaskTimes'];
     #今天到到目前为止，浇了多少次水
    msg += f'''【今日共浇水】{waterEveryDayT}次\n'''
    msg += f'''【剩余 水滴】{farmInfo['farmUserPro']['totalEnergy']}g💧\n'''
-   msg += f'''【水果🍉进度】{round(((farmInfo['farmUserPro']['treeEnergy'] / farmInfo['farmUserPro']['treeTotalEnergy']) * 100),2)}%，已浇水{farmInfo['farmUserPro']['treeEnergy'] / 10}次,还需{(farmInfo['farmUserPro']['treeTotalEnergy'] - farmInfo['farmUserPro']['treeEnergy']) / 10}次\n'''
+   msg += f'''【水果🍉进度】{round(((farmInfo['farmUserPro']['treeEnergy'] / farmInfo['farmUserPro']['treeTotalEnergy']) * 100),2)}%，果树已获取{farmInfo['farmUserPro']['treeEnergy']}能量,还需{(farmInfo['farmUserPro']['treeTotalEnergy'] - farmInfo['farmUserPro']['treeEnergy'])}能量\n'''
    
    
    
@@ -637,7 +632,6 @@ def predictionFruit():
   #预测n天后水果课可兑换功能
    waterTotalT = (farmInfo['farmUserPro']['treeTotalEnergy'] - farmInfo['farmUserPro']['treeEnergy']- farmInfo['farmUserPro']['totalEnergy']) / 10
       #一共还需浇多少次水
-   print('一共浇水多少','每天浇水多少',waterTotalT,waterEveryDayT)
    if (waterEveryDayT>0):
       waterD = math.ceil(waterTotalT / waterEveryDayT)
    else:
@@ -652,8 +646,7 @@ def predictionFruit():
    timeArray = time.localtime(seconds)
    pretime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
    msg += f'''【预测】{tm}天之后({pretime}日)可兑换水果🍉'''
-   print(msg)
-   pushmsg('京东农场',msg)
+   loger(msg)
 
 
 
@@ -970,12 +963,19 @@ def pushmsg(title,txt,bflag=1,wflag=1):
     }
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
-    #print(response.text)
+   global result
+   print(result)
+   result =''
+    
+def loger(m):
+   print(m)
+   global result
+   result +=m+'\n'
     
 def DJJ_main():
    jdFruit()
    predictionFruit()
-   
+   pushmsg('京东农场',result)
    
    
    
@@ -997,8 +997,8 @@ def start():
    j=0
    for count in cookiesList:
      j+=1
-     if j!=1:
-       continue
+     #if j!=1:
+       #continue
      print(count)
      oldstr = count.split(';')
      for i in oldstr:
