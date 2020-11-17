@@ -1,0 +1,30 @@
+name: taitian
+
+on:
+  schedule:
+    - cron: '*/15 0,1,2,3,4,5 * * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./music/requirements.txt 
+        
+      - name: 'tiantian' 
+        run: python3 ./music/tian.py 
+        env:
+            DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
+            WETCARD_TIAN_COOKIE: ${{ secrets.WETCARD_TIAN_COOKIE }}
+            DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
+            
+            
