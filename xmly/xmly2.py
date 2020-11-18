@@ -3,6 +3,7 @@ import json
 import rsa
 import base64
 import time
+import timeit
 from itertools import groupby
 from functools import reduce
 from random import choice
@@ -26,6 +27,9 @@ cookiesList = []
 xmly_speed_cookie =''
 
 xmly_bark_cookie=''
+
+xmly_speed_cookie =''
+
 
 
 
@@ -514,6 +518,7 @@ def get_card_coin(cookies, themeId, cardIdList,uid):
     }
     token = requests.get('https://m.ximalaya.com/speed/web-earn/card/token/3',
                          headers=headers, cookies=cookies,).json()["data"]["id"]
+    _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
     data = {
         "cardIdList": cardIdList,
         "themeId": themeId,
@@ -579,6 +584,7 @@ def fragmentExchange(cookies, toCardAwardId):
       obj=response.json()
       fraglist=obj['data']
       if len(fraglist)<2:
+      	print('碎片没有一对，无法兑换')
       	return 
       fromRecordIdList=[fraglist[0],fraglist[1]]
       print('碎片id:',fromRecordIdList)
@@ -598,7 +604,7 @@ def fragmentExchange(cookies, toCardAwardId):
     except Exception as e:
         msg=str(e)
         print(msg)
-def card(cookies):
+def card(cookies,uid):
     print("\n【开始集卡】")
     headers = {
         'Host': 'm.ximalaya.com',
@@ -621,9 +627,9 @@ def card(cookies):
          card_draw2(cookies,drawRecordIdList)
     
       allIds = set([i["id"] for i in userCardsList if i["id"] != 1])
-      #print('自己的非万能卡',allIds)
+      print('自己的非万能卡',allIds)
       delt = set(range(2, 19))-allIds
-      #print('自己没有获取的卡',delt)
+      print('自己没有获取的卡',delt)
       listdelt=sorted(list(delt))
       fragmentExchange(cookies,listdelt[0])
       OmnipotentCard = [i for i in userCardsList if i["id"] == 1]
@@ -662,7 +668,7 @@ def card(cookies):
         if len(recordIdList) == len(_map[themeId]):
             print("卡片凑齐满足兑换金币")
             cardIdList = [i["recordId"] for i in recordIdList]
-            print('卡片类型'+str(themeId), cardIdList)
+            print('开始兑换金币:卡片类型'+str(themeId), cardIdList)
             get_card_coin(cookies, themeId, cardIdList,uid)
     except Exception as e:
           msg=str(e)
@@ -688,7 +694,9 @@ def getOmnipotentCard(cookies,uid):
      token = requests.get('https://m.ximalaya.com/speed/web-earn/card/token/1',
                          headers=headers, cookies=cookies,).json()["data"]["id"]
      mins = int(time.time())
-     date_stamp = (mins-57600) % 86400                  
+     date_stamp = (mins-57600) % 86400
+     _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
+    
      data = {
         "listenTime": mins-date_stamp,
         "signData": rsa_encrypt(f"{_datatime}{token}{uid}", pubkey_str),
@@ -844,6 +852,17 @@ def m():
     sign = hashlib.md5(('2'+'a45421662ad74842a3f3118aa474ac6c').encode()).hexdigest()
     print(sign)
 ##################################################################
+def clock(func):
+    def clocked(*args, **kwargs):
+        t0 = timeit.default_timer()
+        result = func(*args, **kwargs)
+        elapsed = timeit.default_timer() - t0
+        name = func.__name__
+        arg_str = ', '.join(repr(arg) for arg in args)
+        print('[🔔运行完毕用时%0.8fs] %s(%s) -> %r' % (elapsed, name, arg_str, result))
+        return result
+    return clocked
+    
 
 
 def main(cookies,uid):
@@ -854,21 +873,21 @@ def main(cookies,uid):
     saveListenTime(cookies,uid)
     reportTime(cookies,uid)
     bubble(cookies,uid)
-    card(cookies)
+    card(cookies,uid)
     getOmnipotentCard(cookies,uid)
     #dati_taskrecord(cookies)
     ans_main(cookies)
     lottery_info(cookies,uid)
 
     print("\n")
-
+@clock
 def start():
   check()
   j=0
   for i in cookiesList:
     j+=1
-    #if j<6:
-    	#continue
+    #if j!=6:
+    #continue
     print(">>>>>>>>>【账号"+str(j)+"开始】")
     cookies = str2dict(i)
     uid = cookies["1&_token"].split("&")[0]
