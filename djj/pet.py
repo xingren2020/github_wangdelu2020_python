@@ -11,11 +11,11 @@ from dateutil import tz
 import os
 
 
-
+djj_djj_cookie=''
 djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
-djj_djj_cookie=''
+
 
 
 
@@ -49,7 +49,7 @@ def jfPey():
       if (petInfo['petStatus'] == 5 and petInfo['showHongBaoExchangePop']):
 
           slaveHelp()#可以兑换而没有去兑换,也能继续助力好友
-        # print(f'''【提醒⏰】${$.petInfo.goodsInfo.goodsName}已可领取, 请去京东APP或微信小程序查看''')
+          print(f'''【提醒⏰】{petInfo['goodsInfo']['goodsName']}已可领取, 请去京东APP或微信小程序查看''')
         # print(f'''账号${index} - {nickName||UserName}奖品{petInfo['goodsInfo']['goodsName']'}已可领取''')
           return
       print(f'''\n【您的互助码shareCode】 {petInfo['shareCode']}\n''')
@@ -84,6 +84,7 @@ def energyCollect(petInfo):
       message = f'''【第{response['result']['medalNum'] + 1}块勋章完成进度】{response['result']['medalPercent']}%，还需收集{response['result']['needCollectEnergy']}好感\n'''
       message += f'''【已获得勋章】{response['result']['medalNum']}块，还需收集{response['result']['needCollectMedalNum']}块即可兑换奖品{petInfo['goodsInfo']['goodsName']}\n'''
       print(message)
+      pushmsg('jdpet',message)
 #再次投食
 def feedPetsAgain():
    #再次初始化萌宠
@@ -198,19 +199,13 @@ def doTask(taskInfo,petInfo):
      #投食10次
    if (taskInfo[taskListobj[3]] and not taskInfo[taskListobj[3]]['finished']):
       feedReachInitFun(taskInfo)
-      
-      
    if (taskInfo[taskListobj[1]] and not taskInfo[taskListobj[1]]['finished']):
       if (taskInfo[taskListobj[1]]['timeRange']== -1) :
           print('未到三餐时间')
           return 
       getThreeMealReward()
- 
-  
-  
    if (taskInfo[taskListobj[5]] and not taskInfo[taskListobj[5]]['finished']):
        browseShopsInitFun()
-  
    browseSingleShopInitList = [];
    for item in taskListobj:
       if (json.dumps(taskInfo[item]).find('browseSingleShopInit') >0):
@@ -243,9 +238,9 @@ def getThreeMealReward():
    response=response=iosrule(sys._getframe().f_code.co_name)
    print(f'''三餐签到结果: {response}''');
    if (response['code'] == '0' and response['resultCode'] == '0'):
-      print(f'''【定时领狗粮】获得{response['resultthreeMealReward']}g\n''')
+      print(f'''【定时领狗粮】获得{response['result']['threeMealReward']}g\n''')
    else:
-      print(f'''【定时领狗粮】${response['message']}\n''');
+      print(f'''【定时领狗粮】{response['message']}\n''');
 
 
 #浏览指定店铺 任务
@@ -305,6 +300,7 @@ def feedReachInitFun(taskInfo):
           if (response['resultCode'] == 3003 and response['code'] == 0):
               print('剩余狗粮不足, 投食结束');
               needFeedTimes = 0
+              break
           tryTimes-=1
    print('投食任务结束...\n')
 
@@ -421,7 +417,7 @@ def TotalBean(cookies,checkck):
    
 def Pet_main():
    global newShareCodes
-   #newShareCodes= shareCodesFormat()
+   newShareCodes= shareCodesFormat()
    jfPey()
    
    
@@ -448,7 +444,6 @@ def start():
      index+=1
      #if index!=1:
        #continue
-     print(count)
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
