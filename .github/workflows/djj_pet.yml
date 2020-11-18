@@ -2,7 +2,7 @@ name: djj_pet
 
 on:
   schedule:
-    - cron: '1 17,21,23,4,10 * * * '
+    - cron: '16 22,4,10 * * * '
   watch:
     types: [started]
 jobs:
