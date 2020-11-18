@@ -624,7 +624,8 @@ def card(cookies):
       #print('自己的非万能卡',allIds)
       delt = set(range(2, 19))-allIds
       #print('自己没有获取的卡',delt)
-      fragmentExchange(cookies,list(delt)[0])
+      listdelt=sorted(list(delt))
+      fragmentExchange(cookies,listdelt[0])
       OmnipotentCard = [i for i in userCardsList if i["id"] == 1]
       #print('自己万能卡',OmnipotentCard)
       if delt and OmnipotentCard:
