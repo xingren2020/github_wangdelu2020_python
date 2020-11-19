@@ -69,8 +69,7 @@ def wetcard_withdraw(ca,ck):
     
     
 def check(st,flag,list,tt):
-   global djj_bark_cookie
-   global djj_sever_jiang
+   result=''
    if "DJJ_BARK_COOKIE" in os.environ:
      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
@@ -93,7 +92,6 @@ def check(st,flag,list,tt):
          wetcard_sign(j,count)
          wetcard_cash(j,count)
    pushmsg(tt,result)
-     
      
 def pushmsg(title,txt,bflag=1,wflag=1):
    txt=urllib.parse.quote(txt)
