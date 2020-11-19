@@ -1,4 +1,4 @@
-name: taitian
+name: wxcard
 
 on:
   schedule:
@@ -20,11 +20,11 @@ jobs:
       - name: 'Install requirements'
         run: pip install -r ./music/requirements.txt 
         
-      - name: 'tiantian' 
+      - name: 'wxcard' 
         run: python3 ./music/tian_wei.py 
         env:
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             WETCARD_TIAN_COOKIE: ${{ secrets.WETCARD_TIAN_COOKIE }}
             DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
-            
+            WETCARD_WEI_COOKIE: ${{ secrets.WETCARD_WEI_COOKIE }}
             
