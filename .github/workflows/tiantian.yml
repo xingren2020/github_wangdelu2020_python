@@ -21,7 +21,7 @@ jobs:
         run: pip install -r ./music/requirements.txt 
         
       - name: 'tiantian' 
-        run: python3 ./music/tian.py 
+        run: python3 ./music/tian_wei.py 
         env:
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             WETCARD_TIAN_COOKIE: ${{ secrets.WETCARD_TIAN_COOKIE }}
