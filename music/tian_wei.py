@@ -7,15 +7,18 @@ import urllib
 from datetime import datetime
 from dateutil import tz
 
-mins = int(time.time())
-date_stamp = (mins-57600) % 86400
+
 print(datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
 _datatime = datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y%m%d", )
 result=''
 djj_bark_cookie=''
 djj_sever_jiang=''
+wetcard_tian_cookie = ''
+wetcard_tianlist=[]
 wetcard_wei_cookie = ''
 wetcard_weilist=[]
+
+
 def wetcard_sign(j,ck):
     headers = {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.14(0x17000e2e) NetType/4G Language/zh_CN'}
@@ -65,26 +68,31 @@ def wetcard_withdraw(ca,ck):
     loger(msg)
     
     
-def check():
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   global wetcard_wei_cookie
+def check(st,flag,list,tt):
    global djj_bark_cookie
    global djj_sever_jiang
    if "DJJ_BARK_COOKIE" in os.environ:
      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
-   if "WETCARD_WEI_COOKIE" in os.environ:
-      wetcard_wei_cookie = os.environ["WETCARD_WEI_COOKIE"]
-   if wetcard_wei_cookie:
-       for line in wetcard_wei_cookie.split('\n'):
+   if flag in os.environ:
+      st = os.environ[flag]
+   if st:
+       for line in st.split('\n'):
          if not line:
             continue 
-         wetcard_weilist.append(line.strip())
+         list.append(line.strip())
    else:
-     print('DTask is over.')
-     exit()
-     
+       print('DTask is over.')
+       return 
+   j=0
+   for count in list:
+      j+=1
+      print(f'''>>>>>>>>>【账号{str(j)}开始】''')
+      if count:
+         wetcard_sign(j,count)
+         wetcard_cash(j,count)
+   pushmsg(tt,result)
      
      
 def pushmsg(title,txt,bflag=1,wflag=1):
@@ -113,11 +121,9 @@ def loger(m):
    
 
 
-check()
-j=0
-for count in wetcard_list:
-   j+=1
-   print(f'''>>>>>>>>>【账号{str(j)}开始】''')
-   wetcard_sign(j,count)
-   wetcard_cash(j,count)
-pushmsg('weicard',result)
+
+
+print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+
+check(wetcard_tian_cookie,'WETCARD_TIAN_COOKIE',wetcard_tianlist,'tiancard')
+check(wetcard_wei_cookie,'WETCARD_WEI_COOKIE',wetcard_weilist,'weicard')
