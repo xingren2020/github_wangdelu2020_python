@@ -46,7 +46,7 @@ def str2dict(str_cookie):
         dict_cookie[j[0].strip()] = j[1].strip()
     return dict_cookie
 
-
+UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 iting/1.0.12 kdtunion_iting/1.0 iting(main)/1.0.12/ios_1"
 
 
     
