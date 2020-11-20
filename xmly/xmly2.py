@@ -937,8 +937,8 @@ def start():
   j=0
   for i in cookiesList:
     j+=1
-    if j!=4:
-       continue
+    #if j!=4:
+       #continue
     print(">>>>>>>>>【账号"+str(j)+"开始】")
     cookies = str2dict(i)
     uid = cookies["1&_token"].split("&")[0]
