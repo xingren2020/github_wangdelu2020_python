@@ -31,7 +31,6 @@ xmly_bark_cookie=''
 xmly_speed_cookie =''
 
 
-
 iosrule=''
 def str2dict(str_cookie):
     if type(str_cookie) == dict:
@@ -179,6 +178,8 @@ def ans_getTimes(cookies):
        remainingTimes = result["data"]["remainingTimes"]  # 可回复次数
        print(f"answer_stamina答题次数: {stamina}")
        print(f"answer_remainingTimes可回复次数: {remainingTimes}\n")
+       return {"stamina": stamina,
+            "remainingTimes": remainingTimes}
     except Exception as e:
          msg=str(e)
          print(msg)
@@ -201,6 +202,7 @@ def ans_start(cookies):
        dateStr = result["data"]["dateStr"]
        lastTopicId = result["data"]["topics"][2]["topicId"]
        print(paperId, dateStr, lastTopicId)
+       return paperId, dateStr, lastTopicId
     except Exception as e:
         msg=str(e)
         print(msg)
@@ -278,16 +280,16 @@ def lottery_info(cookies,uid):
 
     remainingTimes = result["data"]["remainingTimes"]
     print(f'lottery_remainingTimes转盘剩余次数: {remainingTimes}\n')
-    if result["data"]["chanceId"] != 0 and result["data"]["remainingTimes"] == 1:
-        print("免费抽奖次数")
+    if result["data"]["chanceId"] == 0 and result["data"]["remainingTimes"] == 0:
+        print("免费抽奖次数用完")
         return
-        data = {
+    print('继续抽奖')
+    data = {
             "sign": rsa_encrypt(str(result["data"]["chanceId"]), pubkey_str),
         }
-        response = requests.post('https://m.ximalaya.com/speed/web-earn/inspire/lottery/action',
+    response = requests.post('https://m.ximalaya.com/speed/web-earn/inspire/lottery/action',
                                  headers=headers, cookies=cookies, data=json.dumps(data))
-        print(response.text)
-        return
+    print(response.text)
     if result["data"]["remainingTimes"] in [0, 1]:
         return
     data = {
@@ -627,6 +629,7 @@ def card(cookies,uid):
       drawRecordIdList = response.json()["data"]["drawRecordIdList"]
       if drawRecordIdList:
          drawRecordIdList=drawRecordIdList[0:1]
+         print('抽奖卡:',drawRecordIdList)
          card_draw2(cookies,drawRecordIdList)
     
       allIds = set([i["id"] for i in userCardsList if i["id"] != 1])
@@ -934,8 +937,8 @@ def start():
   j=0
   for i in cookiesList:
     j+=1
-    #if j!=6:
-       #continue
+    if j!=4:
+       continue
     print(">>>>>>>>>【账号"+str(j)+"开始】")
     cookies = str2dict(i)
     uid = cookies["1&_token"].split("&")[0]
