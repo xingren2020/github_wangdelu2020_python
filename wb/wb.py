@@ -5,10 +5,8 @@ import urllib
 cookiesList = []
 
 headers={"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Weibo (iPhone11,8__weibo__10.10.2__iphone__os12.4)"}
-
+result=''
 weibo_sign_cookie=''
-
-
 djj_bark_cookie=''
 djj_sever_jiang=''
 
@@ -29,22 +27,49 @@ def pushmsg(title,txt,bflag=1,wflag=1):
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
     #print(response.text)
-
+def weibo_user(url):
+   print('\nuser')
+   msg='【user】'
+   try:
+      curl=f'''https://api.weibo.cn/2/users/show?'''+url[url.find('gsid'):len(url)]
+      response = requests.get(curl)
+      obj=json.loads(response.text)
+      #print(response.text)
+      if(json.dumps(obj).find('name')>0):
+          msg+=obj['name']
+      else:
+       	  msg+='errmsg'
+   except Exception as e:
+      msg+=str(e)
+      #print(msg)
+   loger(msg+'\n')
+   
+   
 def weibo_sign(url):
-    print('\n签到')
-    msg='【签到】'
+   print('\n签到')
+   msg='【签到】'
+   try:
     response = requests.post(url)
     obj=json.loads(response.text)
-    print(obj)
+   # print(obj)
     if(json.dumps(obj).find('10000')>0):
           msg+=obj['msg']
     else:
        	  msg+=obj['errmsg']
-          pushmsg('微博错误提示',msg)
+   except Exception as e:
+      msg+=str(e)
+      #print(msg)
+   loger(msg+'\n')
 
+ 
+
+    
+def loger(m):
+   print(m)
+   global result
+   result +=m
    
-
-
+   
 def check():
    global weibo_sign_cookie
    if "WEIBO_SIGN_COOKIE" in os.environ:
@@ -69,8 +94,10 @@ def check():
 def main():
    check()
    for count in cookiesList:
-      print(count)
+      weibo_user(count)
       weibo_sign(count)
 
+   pushmsg('weibo',result)
+   print('its over')
 if __name__ == '__main__':
     main()
