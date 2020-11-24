@@ -1,0 +1,25 @@
+	name: jd_unsubscribe
+
+on:
+
+  schedule:
+    - cron: '15 22 * * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: '公众号iosrule'
+        run: pip install -r ./djj/requirements.txt 
+        
+      - name: 'run jd_unsubscribe' 
+        run: python3 ./djj/jd_unsubscribe.py
