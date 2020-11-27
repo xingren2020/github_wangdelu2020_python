@@ -93,11 +93,11 @@ def jdPlantBean():
           subTitle = f'''【京东昵称】{plantBeanIndexResult['data']['plantUserInfo']['plantNickName']}'''
           msg += f'''【上期时间】{roundList[0]['dateDesc']}\n'''
           msg += f'''【上期成长值】{roundList[0]['growth']}\n'''
-      #receiveNutrients(currentRoundId)#定时领取营养液
-      #doHelp(myPlantUuid)#助力
-      #doTask(taskList)#做日常任务
-      #doEgg()
-      #stealFriendWater(currentRoundId)
+      receiveNutrients(currentRoundId)#定时领取营养液
+      doHelp(myPlantUuid)#助力
+      doTask(taskList)#做日常任务
+      doEgg()
+      stealFriendWater(currentRoundId)
       doCultureBean(plantBeanIndexResult)
       doGetReward(awardState,roundList,lastRoundId)
       showTaskProcess()
