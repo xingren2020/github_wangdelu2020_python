@@ -131,7 +131,8 @@ def doTask(taskList):
       if (item['taskType'] == 1):
           print('京东app签到')
           print(f'''\n开始做 {item['taskName']}任务''')
-          signRes=json.loads(signBeanIndex())
+          signRes=signBeanIndex()
+          print(signRes)
           if(signRes['code']=='0'):
              Bs=signRes['data']['dailyAward']
              print(f'''{Bs['title']}{Be['subTitle']}{Be['beanAward']['beanCount']}京豆''')
