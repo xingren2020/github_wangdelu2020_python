@@ -18,8 +18,10 @@ jobs:
         with:
           python-version: 3.7
          
-      - name: '公众号iosrule'
+      - name: '红鲤鱼与绿鲤鱼与驴'
         run: pip install -r ./djj/requirements.txt 
         
-      - name: 'run djj_unsubscribe' 
+      - name: '公众号iosrule' 
         run: python3 ./djj/djj_unsubscribe.py
+        env:
+            DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
