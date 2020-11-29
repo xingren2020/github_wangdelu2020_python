@@ -20,8 +20,8 @@ jobs:
       - name: 'Install requirements'
         run: pip install -r ./djj/requirements.txt 
         
-      - name: '公众号iosrulr' 
-        run: python3 ./djj/djj_family.py 
+      - name: '公众号iosrule' 
+        run: python3 ./djj/Djj_family.py 
         env:
             djj_xfj_token: ${{ secrets.djj_xfj_token }}
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
