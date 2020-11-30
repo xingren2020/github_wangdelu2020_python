@@ -171,7 +171,7 @@ def start():
    global djj_djj_cookie
    check('djj_xfj_token',xfj_tklist)
    check('djj_xfj_headers',xfj_hdlist)
-   check('djj_djj_cookie',cookiesList)
+   check('DJJ_DJJ_COOKIE',cookiesList)
    
    j=0
    for count in cookiesList:
