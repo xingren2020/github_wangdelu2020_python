@@ -72,6 +72,8 @@ def loger(m):
    
 def check():
    global weibo_sign_cookie
+   global djj_bark_cookie
+   global djj_sever_jiang
    if "WEIBO_SIGN_COOKIE" in os.environ:
       weibo_sign_cookie = os.environ["WEIBO_SIGN_COOKIE"]
    if "DJJ_BARK_COOKIE" in os.environ:
