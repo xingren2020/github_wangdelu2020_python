@@ -9,7 +9,7 @@ import sys
 from datetime import datetime
 from dateutil import tz
 import os
-
+osenviron={}
 
 djj_djj_cookie=''
 djj_xfj_headers=''
@@ -18,8 +18,6 @@ djj_sever_jiang=''
 #删除
 result=''
 JD_API_HOST = 'https://wq.jd.com/activep3/family/'
-
-
 
 def JD_lotteryTask():
    print('family_query\n')
@@ -380,8 +378,8 @@ def check(flag,list):
      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
-   if flag in os.environ:
-      vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
    if vip:
        for line in vip.split('\n'):
          if not line:
@@ -442,12 +440,10 @@ def clock(func):
 def start():
    cookiesList=[]
    xfj_hdlist=[]
-   xfj_tklist=[]
- 
    global djj_xfj_headers
    global djj_djj_cookie
-   check('djj_xfj_headers',xfj_hdlist)
-   check('djj_djj_cookie',cookiesList)
+   check('DJJ_XFJ_HEADERS',xfj_hdlist)
+   check('DJJ_DJJ_COOKIE',cookiesList)
    j=0
    for count in cookiesList:
      j+=1
