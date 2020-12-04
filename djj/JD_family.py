@@ -169,15 +169,13 @@ def start():
    global djj_xfj_token
    global djj_xfj_headers
    global djj_djj_cookie
-   check('djj_xfj_token',xfj_tklist)
-   check('djj_xfj_headers',xfj_hdlist)
+   check('DJJ_XFJ_TOKEN',xfj_tklist)
+   check('DJJ_XFJ_HEADERS',xfj_hdlist)
    check('DJJ_DJJ_COOKIE',cookiesList)
    
    j=0
    for count in cookiesList:
      j+=1
-     if j!=1:
-       continue
      djj_xfj_headers=eval(xfj_hdlist[j-1])
      djj_xfj_headers['Cookie']=count
      djj_xfj_token=xfj_tklist[j-1]
