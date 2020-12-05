@@ -20,7 +20,7 @@ jobs:
       - name: 'Install requirements'
         run: pip install -r ./djj/requirements.txt 
         
-      - name: 'run djj_fruits' 
+      - name: '公众号iosrule' 
         run: python3 ./djj/JX_Factory.py 
         env:
             DJJ_SHARECODE: ${{ secrets.DJJ_SHARECODE }}
