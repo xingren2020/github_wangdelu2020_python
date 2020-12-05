@@ -23,9 +23,9 @@ jobs:
       - name: '公众号iosrule' 
         run: python3 ./djj/JD_family.py 
         env:
-            djj_xfj_token: ${{ secrets.djj_xfj_token }}
+            DJJ_XFJ_TOKEN: ${{ secrets.DJJ_XFJ_TOKEN }}
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
             DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
-            djj_xfj_headers: ${{ secrets.djj_xfj_headers }}
+            DJJ_XFJ_HEADERS: ${{ secrets.DJJ_XFJ_HEADERS }}
             
