@@ -10,7 +10,7 @@ from datetime import datetime
 from dateutil import tz
 import os
 
-
+osenviron={}
 
 
 djj_bark_cookie=''
@@ -18,7 +18,19 @@ djj_sever_jiang=''
 djj_xfj_token=''
 djj_xfj_headers=''
 djj_djj_cookie=''
-#删除
+
+
+
+
+
+headers={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Host": "wq.jd.com","Referer": "https://lgame.jd.com/babelDiy/Zeus/2dJDkTg31SrzZDAS74ozoKArg7hu/index.html?lng=113.627812&lat=23.278284&sid=632429371578e01154b220fb71e84a0w&un_area=19_1601_50284_50451","User-Agent": "jdapp;iPhone;9.2.4;12.4;3c6b06b6a8d9cc763215d2db748273edc4e02512;network/wifi;ADID/B38160D2-DC94-4414-905B-D15F395FD787;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone11,8;addressid/3529080897;supportBestPay/0;appBuild/167432;pushNoticeIsOpen/0;jdSupportDarkMode/0;pv/111.4;apprpd/JingDou_Detail;ref/JingDou_Detail_Contrller;psq/3;ads/;psn/3c6b06b6a8d9cc763215d2db748273edc4e02512|259;jdv/0|kong|t_1001848278_|jingfen|dcdae1aff03e4544a2abe5b1fea7ff3b|1606876124750|1606876163;adk/;app_device/IOS;pap/JA2015_311210|9.2.4|IOS 12.4;Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",}
+
+
+
+
+
+
+
 
 
 
@@ -88,9 +100,9 @@ def family_query():
     
 def iosrule(mod,task=''):
    tm=round(time.time()*1000)
-   url=JD_API_HOST+f'''{mod}?activeid=10073670&token={djj_xfj_token}&sceneval=2&{task}callback=CheckParamsf&_={tm}'''
+   url=JD_API_HOST+f'''{mod}?activeid=10073670&token=92602dfb7b63776469a06deef1a45021&sceneval=2&{task}&callback=CheckParamsf&_={tm}'''
    try:
-     response=requests.get(url,headers=djj_xfj_headers).text
+     response=requests.get(url,headers=headers).text
      return response
    except Exception as e:
       print(f'''初始化{mode}任务:''', str(e))
@@ -105,6 +117,8 @@ def check(flag,list):
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in os.environ:
       vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
    if vip:
        for line in vip.split('\n'):
          if not line:
@@ -164,21 +178,14 @@ def clock(func):
 @clock
 def start():
    cookiesList=[]
-   xfj_hdlist=[]
-   xfj_tklist=[]
-   global djj_xfj_token
-   global djj_xfj_headers
-   global djj_djj_cookie
-   check('DJJ_XFJ_TOKEN',xfj_tklist)
-   check('DJJ_XFJ_HEADERS',xfj_hdlist)
+   global headers
    check('DJJ_DJJ_COOKIE',cookiesList)
    
    j=0
    for count in cookiesList:
      j+=1
-     djj_xfj_headers=eval(xfj_hdlist[j-1])
-     djj_xfj_headers['Cookie']=count
-     djj_xfj_token=xfj_tklist[j-1]
+     headers['Cookie']=count
+ 
      if(islogon(j,count)):
          JD_family()
 
