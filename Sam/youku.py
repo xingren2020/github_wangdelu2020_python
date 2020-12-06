@@ -5,6 +5,7 @@ import json
 osenviron={}
 
 
+
 def Av(i,hd,j,k):
     print('=🔔='*k)
     try:
@@ -54,10 +55,7 @@ def start():
    bdlist=[]
    watch('sam_url',urllist)
    watch('sam_headers',hdlist)
-   watch('sam_body0',bdlist)
-   watch('sam_body1',bdlist)
-   watch('sam_body2',bdlist)
-   watch('sam_body3',bdlist)
+   watch('sam_body',bdlist)
    for j in range(1):
        print('====count===='+str(j))
        for k in range(len(urllist)):
