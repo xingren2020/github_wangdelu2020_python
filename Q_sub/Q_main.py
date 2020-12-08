@@ -26,7 +26,7 @@ def Av(i,hd,k,key=''):
      else:
          response = requests.get(f'''{i}{key}''',headers=hd,timeout=10)
          print(f'''{i}{key}''')
-     print(response.text)
+     #print(response.text)
      userRes=json.loads(response.text)
      hand(userRes,k)
    except Exception as e:
@@ -72,9 +72,9 @@ def hand(userRes,k):
        elif(k==14):
            if(userRes['code']==0 and userRes['data'] ['hasPackage']):
              redtm=userRes['data']['readTime']
-             print(redtm)
-             print(len(urllist))
-             print(urllist[14])
+             #print(redtm)
+             #print(len(urllist))
+             #print(urllist[14])
              Av(urllist[14],hd,15)
        elif(k==15):
          if userRes['code']==0:
@@ -133,14 +133,14 @@ def start():
    watch('ios_newbt',btlist)
    time.sleep(random.randint(1,4))
    for j in range(len(btlist)):
-       print(f'''===={str(j)}({len(urllist)})''')
+       print(f'''===={str(j+1)}({len(urllist)})''')
        hd=eval(hdlist[0])
        hd['Cookie']=btlist[j]
        for k in range(len(urllist)):
          if(k==11 or k==12 or k==14 or k==15):
             continue
          Av(urllist[k],hd,(k+1))
-       print(str(j)+'💎'*15+'干就完了')
+       print(str(j+1)+'💎'*15+'干就完了')
        result+='\n'
    if notice('4:00','5:00') or notice('22:00','23:00') or notice('13:00','14:00'):
        pushmsg('公众号iosrule',result)
