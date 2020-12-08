@@ -2,7 +2,7 @@ name: JX_Factory
 
 on:
   schedule:
-    - cron: '1 21,0,4,8,10 * * * '
+    - cron: '*/20 * * * * '
   watch:
     types: [started]
 jobs:
