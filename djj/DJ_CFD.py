@@ -58,7 +58,6 @@ def userInfo():
      data=json.loads(iosrule('user/QueryUserInfo'))
      #print(data)
      if (data['iRet'] == 0):
-       print('hhjj')
        info={
           'SceneList':data['SceneList'],
           'ddwMoney':data['ddwMoney'],
@@ -73,7 +72,7 @@ def querySignList():
    print('\n querySignList')
    try:
      data=json.loads(iosrule('task/QuerySignListV2'))
-     print(data)
+     #print(data)
      if (data['iRet'] == 0):
        for i in data['sData']['Sign']:
           if(i['dwStatus']==0):
@@ -85,7 +84,7 @@ def userSignReward(ddwMoney):
    print('\n userSignReward')
    try:
      data=json.loads(iosrule('task/UserSignRewardV2','dwReqUserFlag=1&ddwMoney='+str(ddwMoney)))
-     print(data)
+     #print(data)
      if (data['iRet'] == 0):
         print(f'''获得财富 {data['sData']['dwMoney']}''')
    except Exception as e:
@@ -180,7 +179,7 @@ def treasureHunt():
      print('\n treasureHunt')
      for place in ["tree", "wood", "small_stone"]:
         data=json.loads(iosrule('consume/TreasureHunt','strIndex='+place+'&dwIsShare=0'))
-        print(data)
+        #print(data)
         if(data['iRet']==0):
           print(f'''【获取随机奖励】： success,领获得财富值{data['dwExpericnce']}''')
         else:
@@ -277,7 +276,7 @@ def submitShareCode():
    try:
       url=f'''https://api.ninesix.cc/api/jx-cfd/{info['strMyShareId']}/{jd_name}'''
       response=requests.post(url).json()
-      print(response)
+      #print(response)
       if(response['data']['value']):
       	print('邀请码提交成功')
    except Exception as e:
@@ -289,7 +288,7 @@ def submitShareCode():
     
 def iosrule(functionId,body=''):
    url=JD_API_HOST+f'''/jxcfd/{functionId}?strZone=jxcfd&bizCode=jxcfd&source=jxcfd&dwEnv=7&_cfd_t={round(time.time()*1000)}&ptag=138631.26.55&{body}&_ste=1&_={round(time.time()*1000)+5}&sceneval=2&g_login_type=1&g_ty=ls'''
-   print(url)
+   #print(url)
    try:
      response=requests.get(url,headers=headers).text
      return response
@@ -297,7 +296,7 @@ def iosrule(functionId,body=''):
       print(f'''初始化{functionId}任务:''', str(e))
 def iosrulex(functionId,body=''):
    url=JD_API_HOST+f'''/newtasksys/newtasksys_front/{functionId}?strZone=jxcfd&bizCode=jxcfd&source=jxcfd&dwEnv=7&_cfd_t={round(time.time()*1000)}&ptag=138631.26.55&{body}&_ste=1&_={round(time.time()*1000)+5}&sceneval=2&g_login_type=1&g_ty=ls'''
-   print(url)
+   #print(url)
    try:
      response=requests.get(url,headers=headers).text
      return response
