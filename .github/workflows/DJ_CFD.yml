@@ -2,7 +2,7 @@ name: DJ_CFD
 
 on:
   schedule:
-    - cron: '15 21,0,4,8,10 * * * '
+    - cron: '*/30 * * * * '
   watch:
     types: [started]
 jobs:
