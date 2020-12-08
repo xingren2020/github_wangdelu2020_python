@@ -27,7 +27,7 @@ def Av(i,hd,k,key=''):
          response = requests.post(f'''{i}{key}''',headers=hd,data={},timeout=10)
      else:
          response = requests.get(f'''{i}{key}''',headers=hd,timeout=10)
-         print(f'''{i}{key}''')
+         #print(f'''{i}{key}''')
      #print(response.text)
      userRes=json.loads(response.text)
      hand(userRes,k)
@@ -103,7 +103,7 @@ def pushmsg(title,txt,bflag=1,wflag=1):
       response = requests.post(purl,headers=headers,data=body)
     #print(response.text)
 def loger(m):
-   print(m)
+   #print(m)
    global result
    result +=m                
 def notice(b,e):
