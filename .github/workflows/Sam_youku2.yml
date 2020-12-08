@@ -21,7 +21,7 @@ jobs:
         run: pip install -r ./Sam/requirements.txt 
         
       - name: '公众号iosrule' 
-        run: python3 ./Sam/Sam_youku1.py 
+        run: python3 ./Sam/Sam_youku2.py 
         env:
             sam_url: ${{ secrets.sam_url }}
             sam_headers: ${{ secrets.sam_headers }}
