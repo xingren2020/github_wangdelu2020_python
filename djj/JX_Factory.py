@@ -66,8 +66,10 @@ def TotalBean(cookies,checkck):
    return signmd5
 
 
+
 def JX_DreamFactory():
    userInfo()
+   
    doHelp()
    if(not unActive):
       return 
@@ -87,7 +89,7 @@ def taskList():
      userTaskStatusList = data['data']['userTaskStatusList']
      for i in range(len(userTaskStatusList)):
          vo = userTaskStatusList[i];
-         print(vo)
+         #print(vo)
          if (not vo['awardStatus']== 1):
            if (vo['completedTimes']>= vo['targetTimes']):
              print(f'''任务:{vo['description']}可完成''')
@@ -110,7 +112,7 @@ def completeTask(taskId, taskName):
    global ele
    try:
      data=json.loads(iosrulex('Award', taskId))
-     print(data)
+     #print(data)
      sw=data['data']['awardStatus']
      if(sw==1):
         ele += int(data['data']['prizeInfo'].replace('\\n', ''))
@@ -124,12 +126,12 @@ def doTask(taskId):
    print('\n taskId',taskId)
    try:
      data=json.loads(iosrulex('DoTask', taskId))
-     print(data)
+     #print(data)
      sw=data['ret']
      if(sw==0):
         print(f'''任务完成''')
      else:
-        print(f'''任务失败''')
+        print(f'''任务失败{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -143,7 +145,7 @@ def getUserElectricity():
    try:
      print('factoryId',factoryId)
      data=json.loads(iosrule('generator/QueryCurrentElectricityQuantity','factoryid='+str(factoryId)))
-     print(data)
+     #print(data)
      if (data['ret'] == 0):
         if (data['data']['nextCollectDoubleFlag']==1):
           flag='可'
@@ -158,26 +160,25 @@ def getUserElectricity():
         if (data['data']['nextCollectDoubleFlag'] ==1):
            if (data['data']['currentElectricityQuantity'] == data['data']['maxElectricityQuantity'] and data['data']['doubleElectricityFlag']):
               print('发电机：电力可翻倍并收获')
-              collectElectricity()
+              CollectCurrentElectricity()
            else:
-              print(f'''【发电机电力】当前 ${data.data.currentElectricityQuantity} 电力，未达到收获标准\n''')
+              print(f'''【发电机电力】当前{data['data']['currentElectricityQuantity']} 电力，未达到收获标准\n''')
         else:
              print('再收取双倍电力达到上限时，直接收取，不再等到满级')
-             collectElectricity()
+             
    except Exception as e:
       msg=str(e)
       print(msg)
-def collectElectricity():
-   print('\n   collectElectricity')
+def CollectCurrentElectricity():
+   print('\n   CollectCurrentElectricity',factoryId)
    try:
-
-      body =f'''/dreamfactory/generator/CollectCurrentElectricity?zone=dream_factory&apptoken=&pgtimestamp=&phoneID=&factoryid={factoryid}&doubleflag=1&sceneval=2&g_login_type=1'''
-      data=json.loads(iosrule('generator/CollectCurrentElectricit', body))
-      print(data)
-      if (data['ret'] == 0):
-            ele += int(data['data']['loginPinCollectElectricity'])
-            print(f'''帮助好友收取 {data['data']['CollectElectricity']} 电力，获得 {data['data']['loginPinCollectElectricity']} 电力''')
-      
+        body = 'factoryid='+str(factoryId)+'&apptoken=&pgtimestamp=&phoneID=&doubleflag=1'
+        data=json.loads(iosrule('generator/CollectCurrentElectricity', body))
+        print(data)
+        if (data['ret'] == 0):
+          print(f'''【收取发电站】收取成功，获得{data['data']['CollectElectricity']} 电力''')
+        else:
+          print(f'''{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -188,6 +189,8 @@ def investElectric():
        print(data)
        if (data['ret'] == 0):
          print(f'''成功投入电力{data['data']['investElectric']}电力''')
+       else:
+          print(f'''投入失败{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -200,6 +203,8 @@ def QueryHireReward():
          for item in data['data']['hireReward']:
                 print(item['date'])
                 hireAward(item['date'])
+       else:
+          print(f'''{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -207,11 +212,11 @@ def hireAward(date):
    print('\n   hireAward')
    try:
        data=json.loads(iosrule('friend/HireAward', 'date='+date+'&type=0'))
-       print(data)
+       #print(data)
        if (data['ret'] == 0):
          print(f'''打工电力,收取成功''')
        else:
-          print(f'''打工电力,收取失败''')
+          print(f'''打工电力,收取失败{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -221,7 +226,7 @@ def PickUp(Pin=encryptPin,help=False):
      for index in range(5):
        index+=1
        data=json.loads(iosrule('usermaterial/PickUpComponent', 'placeId='+str(index)+'&pin='+str(Pin)))
-       print(data)
+       #print(data)
        if (data['ret'] == 0):
          epower=data['data']['increaseElectric']
          if(help):
@@ -230,9 +235,10 @@ def PickUp(Pin=encryptPin,help=False):
            print(f'''收取自家零件成功:获得{epower}电力''')
        else:
          if(help):
-           print(f'''收取好友[{Pin}]零件失败''')
+           print(f'''收取好友[{Pin}]:{data['msg']}''')
          else:
-           print(f'''收取自家零件失败''')
+           print(f'''收取自家零件失败:{data['msg']}''')
+       time.sleep(1)
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -241,7 +247,7 @@ def stealFriend():
    print('\n   stealFriend')
    try:
        data=json.loads(iosrule('friend/QueryFactoryManagerList', 'sort=0'))
-       print(data)
+       #print(data)
        if (data['ret'] == 0):
          el=data['data']['list']
          for i in el:
@@ -249,6 +255,9 @@ def stealFriend():
            if(Pin==Defalt_ShareCode[0] or Pin==Defalt_ShareCode[1]):
               continue
            PickUp(Pin,True)
+           time.sleep(1)
+       else:
+           print(f'''{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -319,10 +328,14 @@ def GetCommodityDetails(commodityDimId):
       msg=str(e)
       print(msg)
 def DrawProductionStagePrize():
-   print('\n  DrawProductionStagePrize')
+   print('\n  DrawProductionStagePrize',productionId)
    try:
       data=iosrule('userinfo/DrawProductionStagePrize', 'productionId='+str(productionId))
-      print(data)
+      #print(data)
+      if(data['ret']==0):
+         print('成功======')
+      else:
+        print(f'''失败:{data['msg']}''')
    except Exception as e:
       msg=str(e)
       print(msg)
