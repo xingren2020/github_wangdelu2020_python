@@ -40,6 +40,7 @@ def JD_car():
    time.sleep(2)
    all_mission('game')
    time.sleep(1)
+   Gamestart()
    getPoint()
 
    
@@ -116,7 +117,33 @@ def all_mission(flag):
       print(msg)
 
 
-
+def Gamestart():
+   print('\n Gamestart')
+   try:
+     data=json.loads(iosrule('/v1/game/start/check'))
+     #print(data)
+     if (data['status']):
+        if (data['data']['hasPower']):
+          print('success.....,start')
+          Gostart()
+        else:
+          print('have not enough power.....')
+   except Exception as e:
+      msg=str(e)
+      print(msg)
+def Gostart():
+   print('\n Gostart')
+   try:
+     data=json.loads(iosrule('v1/game/start'))
+    # print(data)
+     if (data['status']):
+        print(f'''success.....,get{data['data']['value']}赛点,currentSiteNum:{data['data']['currentSiteNum']}''')
+     else:
+       print(f'''have not enough power.....{data['error']['msg']}''')
+   except Exception as e:
+      msg=str(e)
+      print(msg)
+      
 def getPoint():
    try:
      print('\n 💎getPoint')
