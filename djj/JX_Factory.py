@@ -305,7 +305,7 @@ def userInfo():
             
          
             if (production['investedElectric'] >= production['needElectric']):
-              msg+=f'''【生产商品】${productName}已生产完,请速去兑换'''
+              msg+=f'''【生产商品】{productName}已生产完,请速去兑换'''
         else:
              unActive=False
              print('【提示】此账号京喜工厂活动未开始\n请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动\n')
@@ -511,6 +511,6 @@ def start():
      headers['Cookie']=count
      if(islogon(j,count)):
          JX_DreamFactory()
-
+   pushmsg('jx_factory',result)
 if __name__ == '__main__':
        start()
