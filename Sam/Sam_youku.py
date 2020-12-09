@@ -56,14 +56,12 @@ def watch(flag,list):
 
 def start():
    global bdlist,urllist,hdlist
-   urllist=[]
-   hdlist=[]
-   bdlist=[]
    time.sleep(random.randint(1,5))
    watch('sam_url',urllist)
    watch('sam_headers',hdlist)
    for j in range(10):
        print('====count===='+str(j))
+       bdlist=[]
        watch('sam_body'+str(j),bdlist)
        if(len(bdlist)==0):
             break
