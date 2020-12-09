@@ -25,4 +25,13 @@ jobs:
         env:
             sam_url: ${{ secrets.sam_url }}
             sam_headers: ${{ secrets.sam_headers }}
-            sam_body: ${{ secrets.sam_body }}
+            sam_body0: ${{ secrets.sam_body0 }}
+            sam_body1: ${{ secrets.sam_body1 }}
+            sam_body2: ${{ secrets.sam_body2 }}
+            sam_body3: ${{ secrets.sam_body3 }}
+            sam_body4: ${{ secrets.sam_body4 }}
+            sam_body5: ${{ secrets.sam_body5 }}
+            sam_body6: ${{ secrets.sam_body6 }}
+            sam_body7: ${{ secrets.sam_body7 }}
+            sam_body8: ${{ secrets.sam_body8 }}
+            sam_body9: ${{ secrets.sam_body9 }}
