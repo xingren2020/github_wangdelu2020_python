@@ -19,8 +19,8 @@ def Av(i,hd,j,k):
          for item in Res['data']['task_list']:
            if(json.dumps(item).find('get_coin')>0):
              print('find')
-             if(item['status']==0):
-               Av(urllist[2],hdlist[0],bdlist[2*k+j],3)
+             if(item['status']==2):
+               Av(urllist[2],hdlist[0],bdlist[2],3)
        elif(k==3):
           print(Res['msg'])
        elif(k==4):
