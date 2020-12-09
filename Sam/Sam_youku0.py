@@ -4,21 +4,21 @@ import re
 import json
 osenviron={}
 
-
-
+urllist=[]
+hdlist=[]
+bdlist=[]
 def Av(i,hd,j,k):
     print('=🔔='*k)
     try:
        response = requests.post(i,headers=eval(hd),data=j)
        Res=response.json()
-       
+       #print(Res)
        if(k==1):
            print(Res['msg'])
        elif(k==2):
          print(Res['msg'])
          for item in Res['data']['task_list']:
            if(json.dumps(item).find('get_coin')>0):
-             #print('find')
              if(item['status']==2):
                Av(urllist[2],hdlist[0],bdlist[2],3)
        elif(k==3):
@@ -50,9 +50,7 @@ def watch(flag,list):
 
 
 def start():
-   urllist=[]
-   hdlist=[]
-   bdlist=[]
+   global bdlist,urllist,hdlist
    watch('sam_url',urllist)
    watch('sam_headers',hdlist)
    watch('sam_body0',bdlist)
