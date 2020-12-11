@@ -13,15 +13,10 @@ import dateutil.parser
 
 osenviron={}
 header={}
-djj_sharecode=''
+sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
-djj_djj_cookie=''
-cookiesList=[]
-result=''
-
-
-
+djj_sharecode=''
 
 
 
@@ -29,9 +24,10 @@ JD_API_HOST = 'https://api.m.jd.com/client.action'
 
 
 
+Defalt_ShareCode=['P04z54XCjVUm4aW5m9cZzurqQcz_VTZgpY8fQ','P04z54XCjVUm4aW5m9cZxGxqCoc3VQ9q9wdfQ']
 
-
-
+cookiesList=[]
+result=''
 
 def myhd(hd):
    hd=eval(hd)
@@ -67,6 +63,7 @@ def TotalBean(cookies,checkck):
 def JD_healthyDay():
    try:
       print('\n  healthyDay')
+      global sharecode
       body='functionId=healthyDay_getHomeData&body={"appId":"1EFRTxw","taskToken":""}&client=wh5&clientVersion=1.0.0'
       res=json.loads(iosrule(body))
       #print(res)
@@ -79,10 +76,12 @@ def JD_healthyDay():
       startTime=stamptm(res['result']['activityInfo']['startTime'])
       money=res['result']['userInfo']['userScore']
       status=res['result']['userInfo']['wholeTaskStatus']
+      sharecode=res['result']['taskVos'][3]['assistTaskDetailVo']['taskToken']
       print(f'''活动信息:
       【startTime】{startTime}
       【endTime】  {endTime}
       【money】    {money}
+      【sharecode】{sharecode}
       ''')
       if(int(money)>500):
         for i in range(int(int(money)/500)):
@@ -92,7 +91,7 @@ def JD_healthyDay():
         print(f'''开始任务:{item['taskName']}--{item['subTitleName']}''')
         taskId=item['taskId']
         if 'followShopVo' in item.keys():
-          print('\nfollowShopVo')
+          print('\n  followShopVo')
           i=0
           for item_ in item['followShopVo']:
            i+=1
@@ -105,7 +104,7 @@ def JD_healthyDay():
            time.sleep(6)
            dotask(taskToken,taskId,shopName,'0')
         if 'shoppingActivityVos' in item.keys():
-          print('\nshoppingActivityVos')
+          print('\n  shoppingActivityVos')
           i=0
           for item_ in item['shoppingActivityVos']:
            i+=1
@@ -118,7 +117,7 @@ def JD_healthyDay():
            time.sleep(6)
            dotask(taskToken,taskId,shopName,'0')
         if 'productInfoVos' in item.keys():
-          print('\nproductInfoVos')
+          print('\n  productInfoVos')
           i=0
           for item_ in item['productInfoVos']:
            i+=1
@@ -130,6 +129,15 @@ def JD_healthyDay():
            dotask(taskToken,taskId,shopName,'1')
            time.sleep(6)
            dotask(taskToken,taskId,shopName,'0')
+        if 'assistTaskDetailVo' in item.keys():
+          print('\n  assistTaskDetailVo')
+          sharecode=item['assistTaskDetailVo']['taskToken']
+          shopName=f'''任务【{item['taskName']},{item['subTitleName']}'''
+          if(item['status']==2):
+             print(shopName+'==已经完成....')
+          else:
+              doHelp()
+          
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -140,7 +148,8 @@ def dotask(taskToken,taskId,shopName,actionType):
       body='functionId=harmony_collectScore&body={"appId":"1EFRTxw","taskToken":"'+taskToken+'","taskId":'+str(taskId)+',"actionType":'+actionType+'}&client=wh5&clientVersion=1.0.0'
       #print(body)
       res=json.loads(iosrule(body))
-      print(res['result']['bizMsg'])
+      print(res)
+      print(res['data']['bizMsg'])
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -159,8 +168,72 @@ def Lottery(i):
       msg=str(e)
       print(msg)
 
+def doHelp():
+   try:
+      newShareCodes=shareCodesFormat()
+      index=0
+      for code in newShareCodes:
+          index+=1
+          print(f'''【{index}】,开始助力京东账号{code}''')
+          if (not code):
+    	        continue
+          if (code ==sharecode):
+             print(f'''\n跳过自己的{code} \n''')
+             continue
+          print(f'''\n开始助力好友: ''')
+          helpResult= json.loads(helpShare(code))
+          if (helpResult and helpResult['code'] ==0):
+             print(f'''助力朋友:{helpResult['data']['bizMsg']}''')
+   except Exception as e:
+       print(str(e))
+def helpShare(code):
+   print('助力请求::::::::::')
+   try:
+      body='functionId=harmony_collectScore&body={"appId":"1EFRTxw","taskToken":"'+code+'","taskId":6,"actionType":0}&client=wh5&clientVersion=1.0.0'
+      data=iosrule(body)
+      #print(data)
+      return data
+   except Exception as e:
+    	print(str(e))
+def readShareCode():
+   print('\n  readShareCode')
+   url='http://api.turinglabs.net/api/v1/jd/jdapple/read/20/'
+   try:
+      readShareCodeRes=requests.get(url).json()
+      #print(readShareCodeRes)
+      return readShareCodeRes
+   except Exception as e:
+    	pass
 
-    
+def shareCodesFormat():
+   newShareCodes = []
+  # print(ShareCode)
+   #ShareCode=''
+   print('开始读取默认助力码')
+   readShareCodeRes = readShareCode()
+   #print(readShareCodeRes)
+   if (readShareCodeRes and readShareCodeRes['code'] == 200):
+        #print(readShareCodeRes['data']['value'])
+        newShareCodes.append(readShareCodeRes['data']['value'])
+        newShareCodes=Defalt_ShareCode+newShareCodes
+        print('添加完毕:',newShareCodes)
+   else:
+        newShareCodes=Defalt_ShareCode
+   print(f'''京东账号将要助力的好友{newShareCodes}''')
+   return newShareCodes
+
+def submitShareCode():
+   print('\n提交验证码')
+   try:
+      url=f'''https://api.ninesix.cc/api/jx-cfd/{info['strMyShareId']}/{jd_name}'''
+      response=requests.post(url).json()
+      #print(response)
+      if(response['data']['value']):
+      	print('邀请码提交成功')
+   except Exception as e:
+    	print(str(e))
+
+
 
     
 def iosrule(body={}):
