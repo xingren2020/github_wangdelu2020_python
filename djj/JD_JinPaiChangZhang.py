@@ -115,15 +115,16 @@ def selectCard(cardInfo):
    try:
      print('🍋🍋🍋🍋开始选择')
      data=json.loads(iosrule('SelectCard','cardInfo='+urllib.parse.quote(json.dumps({"cardInfo":cardInfo}))))
-     print(data)
+     #print(data)
      if(data['ret']==0):
        finishCard(cardInfo[0]['cardId'])
    except Exception as e:
       msg=str(e)
       print(msg)
 def finishCard(cardId):
+   print('🍋🍋🍋🍋完成卡片')
    try:
-     data=json.loads(iosrule('FinishCard','cardInfo='+cardId))
+     data=json.loads(iosrule('FinishCard','cardInfo='+str(cardId)))
      print(data)
      if(data['ret']==0):
         ratio = data['data']['cardInfo']
@@ -135,7 +136,7 @@ def upgrade():
    try:
      dt=datetime.today().strftime('%Y%m%d')
      data=json.loads(iosrule('UpgradeUserLevelDraw','date='+dt+'&type=0'))
-     print(data)
+     #print(data)
      if (data['ret'] ==0 and data['data']['active']):
         print(f'''升级成功，获得{data['data']}''')
    except Exception as e:
@@ -314,7 +315,7 @@ def shareCodesFormat():
     
 def iosrule(functionId,body=''):
    url=JD_API_HOST+f'''/jxstory/userinfo/{functionId}?bizcode=jxstory&{body}&sceneval=2&g_login_type=1&_time={round(time.time()*1000)}&={round(time.time()*1000)+6}'''
-   print(url)
+   #print(url)
    try:
      response=requests.get(url,headers=headers).text
      return response
