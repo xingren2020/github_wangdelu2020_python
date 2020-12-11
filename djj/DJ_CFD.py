@@ -11,7 +11,7 @@ from dateutil import tz
 import os
 
 
-
+osenviron={}
 djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
@@ -20,26 +20,23 @@ djj_djj_cookie=''
 Defalt_ShareCode=['B8CB4F09962CFB8F35187ADF71D4F522F5CCA648B7EFAA05C0C77DB56CCD6317','2F8FC80C8A065332B368DBB9401F1F93F5CCA648B7EFAA05C0C77DB56CCD6317']
 
 JD_API_HOST = 'https://m.jingxi.com'
-headers={
-      'Host': 'm.jingxi.com',
-      'Accept': '*/*',
-      'User-Agent': 'jdpingou;iPhone;3.15.2;12.4;fccee6e5e9f146fcedd9be68ef5807568f000c12;network/4g;model/iPhone11,8;appBuild/100365;ADID/B38160D2-DC94-4414-905B-D15F395FD787;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/11;pap/JA2015_311210;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-      'Accept-Language': 'zh-cn',
-      'Referer': 'https://st.jingxi.com/fortune_island/index.html?',
-      'Accept-Encoding': 'gzip, deflate, br',
-    }
+headers={}
 
       
-   
- 
-    
-    
-    
-    
+
+
 cookiesList=[]
 result=''
 jd_name=''
 info={}
+
+
+def myhd(hd):
+   hd=eval(hd)
+   hd['Referer']='https://st.jingxi.com/fortune_island/index.html?'
+   return hd
+   
+   
 def JX_CaiFuDao():
    userInfo()
    querySignList()
@@ -84,7 +81,7 @@ def userSignReward(ddwMoney):
    print('\n userSignReward')
    try:
      data=json.loads(iosrule('task/UserSignRewardV2','dwReqUserFlag=1&ddwMoney='+str(ddwMoney)))
-     #print(data)
+     print(data)
      if (data['iRet'] == 0):
         print(f'''获得财富 {data['sData']['dwMoney']}''')
    except Exception as e:
@@ -206,7 +203,7 @@ def TotalBean(cookies,checkck):
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
        	  print(msg)
-          pushmsg(msg)
+          pushmsg('JD_treasure',msg)
    except Exception as e:
       signmd5=False
       msg=str(e)
@@ -288,12 +285,12 @@ def submitShareCode():
     
 def iosrule(functionId,body=''):
    url=JD_API_HOST+f'''/jxcfd/{functionId}?strZone=jxcfd&bizCode=jxcfd&source=jxcfd&dwEnv=7&_cfd_t={round(time.time()*1000)}&ptag=138631.26.55&{body}&_ste=1&_={round(time.time()*1000)+5}&sceneval=2&g_login_type=1&g_ty=ls'''
-   #print(url)
+
    try:
-     response=requests.get(url,headers=headers).text
-     return response
+      response=requests.get(url,headers=headers).text
+      return response
    except Exception as e:
-      print(f'''初始化{functionId}任务:''', str(e))
+     print(f'''初始化{functionId}任务:''', str(e))
 def iosrulex(functionId,body=''):
    url=JD_API_HOST+f'''/newtasksys/newtasksys_front/{functionId}?strZone=jxcfd&bizCode=jxcfd&source=jxcfd&dwEnv=7&_cfd_t={round(time.time()*1000)}&ptag=138631.26.55&{body}&_ste=1&_={round(time.time()*1000)+5}&sceneval=2&g_login_type=1&g_ty=ls'''
    #print(url)
@@ -304,29 +301,27 @@ def iosrulex(functionId,body=''):
       print(f'''初始化{functionId}任务:''', str(e))
 
       
-def check():
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   global djj_djj_cookie
+def check(flag,list):
+   vip=''
    global djj_bark_cookie
    global djj_sever_jiang
    if "DJJ_BARK_COOKIE" in os.environ:
      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
-   if "DJJ_DJJ_COOKIE" in os.environ:
-      djj_djj_cookie = os.environ["DJJ_DJJ_COOKIE"]
-      for line in djj_djj_cookie.split('\n'):
-        if not line:
-          continue 
-        cookiesList.append(line.strip())
-   elif djj_djj_cookie:
-       for line in djj_djj_cookie.split('\n'):
+   if flag in os.environ:
+      vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
+   if vip:
+       for line in vip.split('\n'):
          if not line:
             continue 
-         cookiesList.append(line.strip())
+         list.append(line.strip())
+       return list
    else:
-     print('DTask is over.')
-     exit()
+       print(f'''【{flag}】 is empty,DTask is over.''')
+       exit()
 
 def pushmsg(title,txt,bflag=1,wflag=1):
    txt=urllib.parse.quote(txt)
@@ -377,12 +372,18 @@ def clock(func):
     
 @clock
 def start():
-   global djj_shop_headers
-   check()
+   cookiesList=[]
+   xfj_hdlist=[]
+   global headers
+   global djj_djj_cookie
+   check('DJJ_XFJ_HEADERS',xfj_hdlist)
+   check('DJJ_DJJ_COOKIE',cookiesList)
    j=0
    for count in cookiesList:
      j+=1
+     headers=myhd(xfj_hdlist[0])
      headers['Cookie']=count
+    
      if(islogon(j,count)):
          JX_CaiFuDao()
 
