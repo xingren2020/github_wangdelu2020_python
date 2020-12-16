@@ -17,11 +17,8 @@ result=''
 
 djj_bark_cookie=''
 djj_sever_jiang=''
-wx_dawang_body='''oJnqo5cEzbz13ynbpNLWbeM49s98
-oJnqo5aNklWHk1ScpTKtAoa7DfWI
-'''
-djj_bark_cookie='azjFQzUeTG5hVYx7cRJRTU'
-djj_sever_jiang='SCU124498Teba646995bd06b3e0bb128138c7f06ac5fa7952a4ab92'
+wx_dawang_body=''
+
 
 header={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/json","Host": "www.dawang-goon.cn","Referer": "https://servicewechat.com/wxd9e27d81d505e3b4/49/page-frame.html","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.14(0x17000e2e) NetType/WIFI Language/zh_CN",}
 Mit = 'https://www.dawang-goon.cn/api/jbs/'
@@ -35,13 +32,14 @@ def getSign(j,id):
      body['id']=id
      response = requests.post(Mit+sys._getframe().f_code.co_name,headers=header,data=json.dumps(body))
      Res=response.json()
-     #print(Res)
+     print(Res)
      if(Res['error']==0):
        ls=[]
        body = {}
-       ls=Res['question']['answers']
+       ls=Res['question']
        body['id']=id
-       body['answer']=random.choice(ls)
+       if(len(ls)>0):
+         body['answer']=random.choice(ls['answers'])
        sign(j,body)
    except Exception as e:
       msg=str(e)
@@ -52,7 +50,7 @@ def sign(j,body):
 
      response = requests.post(Mit+sys._getframe().f_code.co_name,headers=header,data=json.dumps(body))
      Res=response.json()
-     #print(Res)
+     print(Res)
    except Exception as e:
       msg=str(e)
       print(msg)
