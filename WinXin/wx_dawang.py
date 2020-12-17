@@ -50,7 +50,7 @@ def sign(j,body):
 
      response = requests.post(Mit+sys._getframe().f_code.co_name,headers=header,data=json.dumps(body))
      Res=response.json()
-     print(Res)
+     #print(Res)
    except Exception as e:
       msg=str(e)
       print(msg)
