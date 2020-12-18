@@ -10,18 +10,14 @@ from datetime import datetime
 from dateutil import tz
 import os
 
-#update 20201209
+#update 20201217
 osenviron={}
-
+djj_djj_cookie=''
 djj_bark_cookie=''
 djj_sever_jiang=''
 headers={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-Hans-CN;q=1, en-US;q=0.9, zh-Hant-CN;q=0.8","Content-Type": "application/x-www-form-urlencoded","User-Agent": "JD4iPhone/167432 (iPhone; iOS 12.4; Scale/2.00)",}
 
 
-osenviron['DJJ_DJJ_COOKIE']='''Cookie: __jd_ref_cls=Mnpm_ComponentApplied; mba_muid=16077358146241454072678.132.1608171565731; mba_sid=132.61; __jda=122270672.16077358146241454072678.1607735814.1607999852.1608171308.5; __jdb=122270672.8.16077358146241454072678|5.1608171308; __jdc=122270672; __jdv=122270672%7Ckong%7Ct_1001848278_%7Cjingfen%7Cdcdae1aff03e4544a2abe5b1fea7ff3b%7C1606876124750; pre_seq=58; pre_session=3c6b06b6a8d9cc763215d2db748273edc4e02512|376; unpl=V2_ZzNtbRcFFkUhCBYDLBheUWIHF1gSVBNGIQwVVCxNDAMwVBAOclRCFnQURldnGF8UZwIZXktcRhdFCEZkexhdBW4GG15EXnMlfQAoVDZQEUgqMxFdcldCJSZYFgEvGggAZQBADRBSQBd0XEQHfh4IB2cEQA1EB0ZHRThGUkspbARXAiJcchwtFDhbFgQuTV9RYgERDxIFRhZ3CRJWKBxbUWUDFQ8SURMQJzhHZHg%3D; pt_key=app_openAAJf2a5HADAjhzyH73vaC0Xiv1v1ywLy9_dhg-rJ8oTLOCnuQDYm7vvx5njfnY61wZro-KUh3Sc; pt_pin=jd_kcDKIXFrQgaj; pwdt_id=jd_kcDKIXFrQgaj; sid=56f2ed088321ffc84599ff6733ed5e5w; wxa_level=1; mobilev=touch; 3AB9D23F7A4B3C9B=VZQF7EIYQYJKPQIU74AIOBJKF22UDNSMT2QQQIVURYAKF2YBHTAU5JRQZUGGQPWAF4LTR3A2MZBK4OXQOZXHLJF4IM; shshshfpa=b21c2188-a9ee-0c7a-96bb-bffd77e6f997-1605501503; shshshfpb=lMdmIvIIK9Nt7SkcQGnFQ9Q%3D%3D; BATQW722QTLYVCRD={"tk":"jdd01B34XBKXDRTN2W23O6CBDAPAG3A2THNIXK6LJGP2QNXHFJ5IEMNMGSASVNE5RBYREUN2FZRA4CCLKKZXTBIHGIEZ6FO2XUWMVHEX4UAA01234567","t":1608000007951}; shshshfp=162f198ec11ff81c387827ce86a78cb9; RT="z=1&dm=jd.com&si=cf7r4smqfgu&ss=kipdojbi&sl=1&tt=1ll&ld=1n0"; qd_fs=1607736388827; qd_ls=1607736388827; qd_sq=2; qd_ts=1607761160832; qd_uid=KIL0QH24-I93AKF3P8RF9NBL6VULL; sc_width=414; __wga=1607736321941.1607736321941.1607736321941.1607736321941.1.1; cid=8; retina=1; visitkey=61825091785064646; webp=0
-
-'''
-#删除
 
 
 
@@ -60,23 +56,21 @@ def JD_doTask():
       
      
 def JR_TaSkall():
-  '''
-    JR_Rebates()
+   JR_Rebates()
    JR_Steel()
    JR_DoubleSign()
    JRJT_Checkin()
    JRJT_DoubleSign()
    JR_LuckyLottery()
-   '''
+
 
 def JD_TaSkall():
 
-   #JD_turncardsign()
-   #JD_Car1209Sign()
+   JD_turncardsign()
+   JD_Car1209Sign()
    JD_shaking()
 
-   '''
-    JD_BeanSign()
+   JD_BeanSign()
    JD_Turn()
 
    JD_Overseas()
@@ -86,7 +80,6 @@ def JD_TaSkall():
    JD_supermarket()
    JD_SecKilling()
    
-'''
 
      
 
