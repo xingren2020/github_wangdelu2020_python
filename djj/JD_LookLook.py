@@ -137,7 +137,7 @@ def TotalBean(cookies,checkck):
       }
    try:
        ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers,timeout=10).json()
-       if json.dumps(ckresult).find(checkck)>0:
+       if ckresult['retcode']==0:
            signmd5=True
            loger(f'''【京东{checkck}】''')
        else:
