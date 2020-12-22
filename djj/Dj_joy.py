@@ -117,9 +117,11 @@ def joyList():
    try:
      body = {'paramData': {'inviter': 'DBwF_65db1jIoHqBDEMk8at9zd5YaBeE'}}
      data=json.loads(iosrule('crazyJoy_user_gameState',body).text)
-     print(data)
+     #print(data)
      if (data['success'] and data['data']['joyIds']):
           joyIds = data['data']['joyIds']
+          joyIds.sort()
+          print(joyIds)
    except Exception as e:
        print(str(e))
        
@@ -431,7 +433,7 @@ def start():
    check('DJJ_XFJ_HEADERS',xfj_hdlist)
    check('DJJ_DJJ_COOKIE',cookiesList)
    j=0
-   for i in range(3):
+   for i in range(6):
      for count in cookiesList:
         j+=1
         headers=myhd(xfj_hdlist[0])
