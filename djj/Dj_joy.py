@@ -75,7 +75,7 @@ def checkAndMerge():
               if joyIds[i]==joyIds[i+m]:
                   moveOrMerge(i+m,i)
                   time.sleep(3)
-         
+     time.sleep(10)
      
    except Exception as e:
       msg=str(e)
@@ -90,7 +90,7 @@ def gameState():
      global joyIds,mycode,BUY_JOY_LEVEL
      body = {'paramData': {'inviter':'DBwF_65db1jIoHqBDEMk8at9zd5YaBeE'}}
      data=json.loads(iosrule('crazyJoy_user_gameState',body).text)
-     print(data)
+     #print(data)
      if (data['success']):
        mycode=data['data']['userInviteCode']
        print('邀请码'+data['data']['userInviteCode'])
