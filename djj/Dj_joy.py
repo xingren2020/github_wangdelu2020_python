@@ -431,13 +431,14 @@ def start():
    check('DJJ_XFJ_HEADERS',xfj_hdlist)
    check('DJJ_DJJ_COOKIE',cookiesList)
    j=0
-   for count in cookiesList:
-     j+=1
-     headers=myhd(xfj_hdlist[0])
-     headers['Cookie']=count
+   for i in range(3):
+     for count in cookiesList:
+        j+=1
+        headers=myhd(xfj_hdlist[0])
+        headers['Cookie']=count
     
-     if(islogon(j,count)):
-         JD_Joy()
+        if(islogon(j,count)):
+            JD_Joy()
 
 if __name__ == '__main__':
        start()
