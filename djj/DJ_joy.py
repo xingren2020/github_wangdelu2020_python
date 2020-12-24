@@ -31,6 +31,7 @@ mycode=''
 info={}
 
 
+
 def myhd(hd):
    hd=eval(hd)
    hd['Referer']='https://crazy-joy.jd.com/'
@@ -47,26 +48,32 @@ def JD_Joy():
    checkAndMerge()
 
 
+def allowBoughtList():
+   print('allowBoughtList')
+   try:
+     body = {'paramData': {'entry': 'BUTTON'}}
+     data=json.loads(iosrule('crazyJoy_joy_allowBoughtList',body).text)
+     print(data)
+     return data['data']['buy']['joyId']
+    
+   except Exception as e:
+       print(str(e))
 
 
-   
 def checkAndMerge():
    print('checkAndMerge')
    try:
      print('joy列表',joyIds)
-     buyid=1
-     joyIds.sort()
-     for i in joyIds:
-       if i==0:
-         continue
-       else:
-         buyid=i
-         break
+     buyid=allowBoughtList()
      for i in range(len(joyIds)):
         joy = joyIds[i]
+        if joy<buyid and joy>0:
+          trades(joy,i)
         if (joy ==0):
-           trade(buyid)
+           tradeb(buyid)
            time.sleep(2)
+
+           
      for m in range(len(joyIds)):
         m+=1
         joyList()
@@ -75,7 +82,7 @@ def checkAndMerge():
               if joyIds[i]==joyIds[i+m]:
                   moveOrMerge(i+m,i)
                   time.sleep(3)
-     time.sleep(10)
+        time.sleep(10)
      
    except Exception as e:
       msg=str(e)
@@ -286,8 +293,8 @@ def moveOrMerge(f,t):
    except Exception as e:
        print(str(e))
 
-def trade(joyLevel):
-   print('trade')
+def tradeb(joyLevel):
+   print('tradeb+++++=')
    try:
      body = {"action": "BUY", "joyId": joyLevel, "boxId": ""}
      data=json.loads(iosrule('crazyJoy_joy_trade',body).text)
@@ -298,8 +305,8 @@ def trade(joyLevel):
        print(str(e))
        
 
-def trade1(joyId, boxId):
-   print('trade1')
+def trades(joyId, boxId):
+   print('trades--------')
    try:
      body = {"action": "SELL", "joyId": joyId, "boxId": boxId}
      data=json.loads(iosrule('crazyJoy_joy_trade',body).text)
