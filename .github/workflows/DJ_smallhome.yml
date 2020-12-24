@@ -2,7 +2,7 @@ name: DJ_smallhome
 
 on:
   schedule:
-    - cron: '*/30 * * * * '
+    - cron: '30 22,5 * * * '
   watch:
     types: [started]
 jobs:
