@@ -120,7 +120,7 @@ def joyList():
      #print(data)
      if (data['success'] and data['data']['joyIds']):
           joyIds = data['data']['joyIds']
-          joyIds.sort()
+          #joyIds.sort()
           print(joyIds)
    except Exception as e:
        print(str(e))
