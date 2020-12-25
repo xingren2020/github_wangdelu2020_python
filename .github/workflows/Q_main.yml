@@ -2,7 +2,7 @@ name: Q_main
 
 on:
   schedule:
-    - cron: '*/15 * * * * '
+    - cron: '*/30 * * * * '
   watch:
     types: [started]
 jobs:
