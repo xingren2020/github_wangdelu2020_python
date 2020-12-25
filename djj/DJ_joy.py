@@ -69,6 +69,7 @@ def checkAndMerge():
         joy = joyIds[i]
         if joy<buyid and joy>0:
           trades(joy,i)
+          time.sleep(2)
         if (joy ==0):
            tradeb(buyid)
            time.sleep(2)
