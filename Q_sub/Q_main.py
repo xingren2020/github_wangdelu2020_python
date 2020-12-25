@@ -58,11 +58,11 @@ def hand(userRes,k):
    global redtm
    if(userRes['code']==0):
        if(k==1):
-           msg+=f'''【{userRes['data']['user']['nickName']}】'''
+           msg+=f'''【{userRes['data']['user']['nickName'][0:4]}】'''
        elif(k==2):
-            msg+=f'''-{userRes['data']['user']['amount']}'''
+            msg+=f'''|{userRes['data']['user']['amount']}'''
        elif(k==3):
-             msg+=f'''-{userRes['data']['readTime']}min-{userRes['data']['balance']['allBalance']}'''
+             msg+=f'''|{userRes['data']['readTime']}min'''
        elif(k==10):
            if(userRes['msg']=='ok'):
               for item in userRes['data']['pageParams']['readTimeRewardTask']:
@@ -133,8 +133,10 @@ def start():
    watch('ios_url',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
-   time.sleep(random.randint(1,4))
-   for j in range(len(btlist)):
+   for mm in range(2):
+     result=''
+     time.sleep(random.randint(1,4))
+     for j in range(len(btlist)):
        print(f'''===={str(j+1)}({len(urllist)})''')
        hd=eval(hdlist[0])
        hd['Cookie']=btlist[j]
@@ -142,8 +144,10 @@ def start():
          if(k==11 or k==12 or k==14 or k==15):
             continue
          Av(urllist[k],hd,(k+1))
-       print(str(j+1)+'💎'*15+'干就完了')
-       result+='\n'
+     print(str(j+1)+'💎'*15+'干就完了')
+     result+='\n'
+     if mm<1:
+       time.sleep(600)
    if notice('4:00','5:00') or notice('22:00','23:00') or notice('13:00','14:00'):
        pushmsg('公众号iosrule',result)
 if __name__ == '__main__':
