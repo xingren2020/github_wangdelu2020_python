@@ -8,11 +8,16 @@ import timeit
 import urllib
 from datetime import datetime
 result=''
-djj_bark_cookie=''
-djj_sever_jiang=''
 
 
 osenviron={}
+
+
+
+
+
+
+
 
 
 
@@ -52,8 +57,6 @@ def watch(flag,list):
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in osenviron:
       vip = osenviron[flag]
-   if flag in os.environ:
-      vip = os.environ[flag]
    if vip:
        for line in vip.split('\n'):
          if not line:
@@ -84,7 +87,20 @@ def pushmsg(title,txt,bflag=1,wflag=1):
 def loger(m):
    print(m)
    global result
-   result +=m                
+   result +=m     
+
+
+def getid1(id):
+   lll=id.split(';')
+   for l in lll:
+     if l.find('ywguid=')>=0:
+      return l[(l.find('ywguid=')+7):len(l)]
+def getid2(id):
+   id=json.dumps(id)
+   lll=id.split(',')
+   for l in lll:
+     if l.find('guid')>=0:
+      return l[(l.find('guid')+7):len(l)]                         
 def notice(b,e):
     ll=False
     start_time = datetime.strptime(str(datetime.now().date())+b, '%Y-%m-%d%H:%M')
@@ -124,7 +140,9 @@ def start():
        hd['Cookie']=btlist[j]
        Av(urllist[0],hd,bdlist[j],j+1)
        Va(urllist[1],hd,j+1)
-   print(str(j+1)+'💎'*15+'干就完了')
+       result+='【'+getid2(bdlist[j])[0:4]+'-'+getid1(btlist[j])[0:4]+'】\n'
+       print('count'+str(j+1)+'💎运行完毕')
+   print(result)
 
 if __name__ == '__main__':
        start()
