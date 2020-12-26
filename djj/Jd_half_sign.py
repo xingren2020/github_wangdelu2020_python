@@ -498,8 +498,8 @@ def start():
    j=0
    for count in cookiesList:
      j+=1
-     if j!=1:
-       continue
+     #if j!=1:
+       #continue
      headers['Cookie']=count
      if(islogon(j,count)):
          JD_doTask()
