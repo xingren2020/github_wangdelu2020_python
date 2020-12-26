@@ -1,0 +1,30 @@
+name: JD_Daojia
+
+on:
+  schedule:
+    - cron: '25 22,5 * * * '
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./djj/requirements.txt 
+        
+      - name: '公众号iosrule' 
+        run: python3 ./djj/JD_daojia.py 
+        env:
+            DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
+            DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
+            DJJ_DAOJIA_URL: ${{ secrets.DJJ_DAOJIA_URL }}
+            DJJ_YUAN_CK: ${{ secrets.DJJ_YUAN_CK }}
+            DJJ_DAOJIA_COOKIE: ${{ secrets.DJJ_DAOJIA_COOKIE }}
