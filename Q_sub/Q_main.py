@@ -133,7 +133,7 @@ def start():
    watch('ios_url',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
-   for mm in range(2):
+   for mm in range(3):
      result=''
      time.sleep(random.randint(1,4))
      for j in range(len(btlist)):
@@ -146,7 +146,7 @@ def start():
          Av(urllist[k],hd,(k+1))
      print(str(j+1)+'💎'*15+'干就完了')
      result+='\n'
-     if mm<1:
+     if mm<2:
        time.sleep(600)
    if notice('4:00','5:00') or notice('22:00','23:00') or notice('13:00','14:00'):
        pushmsg('公众号iosrule',result)
