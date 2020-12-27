@@ -18,23 +18,25 @@ djj_sever_jiang=''
 
 
 JD_API_HOST = 'https://daojia.jd.com/client?_jdrandom=1609034402844'
-zyheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
-
-
-djheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
-
 
 yuanck=''
 cookiesList=[]
 yuanckList=[]
 result=''
+activityId=''
+preactivityId=''
+
+zyheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
+
+
+djheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
 
 def JD_XIANDOU():
+   plantBeans_getActivityInfo()
+   plantBeans_getPoints()
    tasklist()
- 
    signin_carveUp()
    plantBeans_getWater()
-   
    loop_wartering()
    
 
@@ -49,10 +51,13 @@ def JD_XIANDOU():
        
 def plantBeans_getActivityInfo():
    print('\n  plantBeans_getActivityInfo')
+   global activityId,preactivityId
    try:
      body ={}
      body=urllib.parse.quote(json.dumps(body))
      data=json.loads(iosrulex('functionId=plantBeans%2FgetActivityInfo&isNeedDealError=true&method=POST&body='+body).text)
+     activityId=data['result']['cur']['activityId']
+     preactivityId=data['result']['pre']['activityId']
      #print(data)
 
      return data
@@ -67,7 +72,7 @@ def ttmsg():
    print('\n  ttmsg')
    try:
       data=plantBeans_getActivityInfo()
-      msg=f'''{data['result']['cur']['activityDay']}|{data['result']['cur']['level']}|{data['result']['cur']['water']}|{data['result']['cur']['levelProgress']}-{data['result']['cur']['totalProgress']}'''
+      msg=f'''{data['result']['cur']['activityDay']}|{data['result']['cur']['level']}|{data['result']['cur']['water']}|{data['result']['cur']['levelProgress']}-{data['result']['cur']['totalProgress']}|[{data['result']['pre']['points']}]'''
       #print(msg)
       loger(msg)
    except Exception as e:
@@ -95,6 +100,7 @@ def loop_wartering():
          print(str(e))
 def tasklist():
    print('\n tasklist')
+   time.sleep(2)
    try:
      body = {"modelId":"M10003","plateCode":1}
      data=json.loads(iosrule('task%2Flist',body).text)
@@ -197,7 +203,7 @@ def signin_carveUp():
 def plantBeans_watering():
    print('\n  plantBeans_watering')
    try:
-     body ={"activityId":"23ad8d84d6addad"}
+     body ={"activityId":activityId}
      body=urllib.parse.quote(json.dumps(body))
      data=json.loads(iosrulex('functionId=plantBeans%2Fwatering&isNeedDealError=true&method=POST&body='+body).text)
      print(data)
@@ -211,7 +217,7 @@ def plantBeans_watering():
 def plantBeans_getWater():
    print('\n  plantBeans_getWater')
    try:
-     body ={"activityId":"23ad8d84d6addad"}
+     body ={"activityId":activityId}
      body=urllib.parse.quote(json.dumps(body))
      data=json.loads(iosrulex('functionId=plantBeans%2FgetWater&isNeedDealError=true&method=POST&body='+body).text)
      print(data)
@@ -221,7 +227,17 @@ def plantBeans_getWater():
        print(str(e))
 
 
+def plantBeans_getPoints():
+   print('\n  plantBeans_getPoints')
+   try:
+     body ={"activityId":preactivityId}
+     body=urllib.parse.quote(json.dumps(body))
+     data=json.loads(iosrulex('functionId=plantBeans%2FgetPoints&isNeedDealError=true&method=POST&body='+body).text)
+     print(data)
 
+    
+   except Exception as e:
+       print(str(e))
 
        
 def iosrule(functionId,body={}):
@@ -353,7 +369,6 @@ def start():
 
         #if(islogon(j,count)):
         JD_XIANDOU()
-     #time.sleep(30)
    pushmsg('JD_Xiandou',result)
 if __name__ == '__main__':
        start()
