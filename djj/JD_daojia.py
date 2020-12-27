@@ -33,8 +33,8 @@ djheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Langua
 
 
 def JD_Daojia():
-   Daojia_getUserAccountInfo()
    
+   Daojia_getUserAccountInfo()
    showSignInMsgNew()
    tasklist_Daojia()
 
@@ -115,55 +115,41 @@ def tasklist_Daojia():
          print(f'''开始任务{len(data['result']['taskInfoList'])}-{str(kk)}: {itm['taskType']} -{itm['taskName']}-{itm['status']}🎁🎁🎁🎁''')
          if itm['status']==1 or itm['status']==0:
            if itm['taskType']!=506:
-            task_received(itm['modelId'],itm['taskId'],itm['taskType'],5)
+            task_received(itm['modelId'],itm['taskId'],itm['taskType'])
             time.sleep(2)
-            task_finished(itm['modelId'],itm['taskId'],itm['taskType'],5)
+            task_finished(itm['modelId'],itm['taskId'],itm['taskType'])
             
          if itm['status']==2:
            if itm['taskType']==513:
-              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],1,5)
-              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],2,5)
-              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],3,5)
+              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],1)
+              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],2)
+              task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],3)
 
            else:
-           	  task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'],0,5)
+           	  task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'])
            time.sleep(2)
    except Exception as e:
        print(str(e))
 
-def task_do(taskType):
-   print('\n task_do___'+str(taskType))
-   try:
-      if taskType==401:
-         fun='xapp%2FfriendHelp%2Flist'
-         body={}
-      if taskType==502:
-         fun='signin%2FifClickedCouponButton'
-         body={}
-         
-      data=json.loads(iosrule(fun,body).text)
-      print(data)
-      print(data['msg'])
-   except Exception as e:
-       print(str(e))
+
          
          
          
-def task_received(modelId,taskId,taskType,plateCode=1):
+def task_received(modelId,taskId,taskType):
    print('\n task_received')
    try:
-     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":plateCode}
+     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":1}
      data=json.loads(iosrule('task%2Freceived',body).text)
      print(data['msg'])
    except Exception as e:
        print(str(e))
        
-def task_sendPrize(modelId,taskId,taskType,subNode=1,plateCode=1):
+def task_sendPrize(modelId,taskId,taskType,subNode=1):
    print('\n task_sendPrize')
    try:
-     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":plateCode}
+     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":1}
      if taskType==513:
-       body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":plateCode,"subNode":subNode}
+       body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":1,"subNode":subNode}
      
      data=json.loads(iosrule('task%2FsendPrize',body).text)
      print(data['msg'])
@@ -171,10 +157,10 @@ def task_sendPrize(modelId,taskId,taskType,subNode=1,plateCode=1):
        print(str(e))
        
        
-def task_finished(modelId,taskId,taskType,plateCode=1):
+def task_finished(modelId,taskId,taskType):
    print('\n task_finished')
    try:
-     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":plateCode}
+     body = {"modelId":modelId,"taskId":taskId,"taskType":taskType,"plateCode":1}
      data=json.loads(iosrule('task%2Ffinished',body).text)
      print(data['msg'])
    except Exception as e:
@@ -196,33 +182,7 @@ def plantBeans_watering():
        
        
        
-def plantBeans_getWater():
-   print('\n  plantBeans_getWater')
-   try:
-     body ={"activityId":"23ad8d84d6addad"}
-     body=urllib.parse.quote(json.dumps(body))
-     data=json.loads(iosrulex('functionId=plantBeans%2FgetWater&isNeedDealError=true&method=POST&body='+body).text)
-     print(data)
 
-    
-   except Exception as e:
-       print(str(e))
-
-
-
-def pigPetAddFood():
-   print('\n  pigPetAddFood')
-   try:
-   	
-      body='reqData=%7B%22skuId%22%3A%221001003001%22%2C%22channelLV%22%3A%22%22%2C%22source%22%3A0%2C%22riskDeviceParam%22%3A%22%7B%5C%22macAddress%5C%22%3A%5C%22%5C%22%2C%5C%22imei%5C%22%3A%5C%22%5C%22%2C%5C%22eid%5C%22%3A%5C%227PEOIPEPFSAQTKCFO6D3R7AKUVSCGGCA4CFQT7TY5GJZ2ONFU2DNUVVLDNUDMZ7SS4BF4RLI66RUA3LYLD6SYWXNII%5C%22%2C%5C%22openUUID%5C%22%3A%5C%22%5C%22%2C%5C%22uuid%5C%22%3A%5C%22%5C%22%2C%5C%22traceIp%5C%22%3A%5C%22%5C%22%2C%5C%22os%5C%22%3A%5C%22%5C%22%2C%5C%22osVersion%5C%22%3A%5C%22%5C%22%2C%5C%22appId%5C%22%3A%5C%22%5C%22%2C%5C%22clientVersion%5C%22%3A%5C%22%5C%22%2C%5C%22resolution%5C%22%3A%5C%22%5C%22%2C%5C%22channelInfo%5C%22%3A%5C%22%5C%22%2C%5C%22networkType%5C%22%3A%5C%22%5C%22%2C%5C%22startNo%5C%22%3A42%2C%5C%22openid%5C%22%3A%5C%22%5C%22%2C%5C%22token%5C%22%3A%5C%22CO6NDE35KVOIEKPZJZGHWMHMDHAKDQTIRH4JPO4NPYNJWYOTRGRO5OWBXJNKHH64UCF3MZYJC5JMY%5C%22%2C%5C%22sid%5C%22%3A%5C%22%5C%22%2C%5C%22terminalType%5C%22%3A%5C%22%5C%22%2C%5C%22longtitude%5C%22%3A%5C%22%5C%22%2C%5C%22latitude%5C%22%3A%5C%22%5C%22%2C%5C%22securityData%5C%22%3A%5C%22%5C%22%2C%5C%22jscContent%5C%22%3A%5C%22%5C%22%2C%5C%22fnHttpHead%5C%22%3A%5C%22%5C%22%2C%5C%22receiveRequestTime%5C%22%3A%5C%22%5C%22%2C%5C%22port%5C%22%3A80%2C%5C%22appType%5C%22%3A%5C%22%5C%22%2C%5C%22deviceType%5C%22%3A%5C%22%5C%22%2C%5C%22fp%5C%22%3A%5C%22f0cbd9bc1239226025501e2d34b891d8%5C%22%2C%5C%22ip%5C%22%3A%5C%22%5C%22%2C%5C%22idfa%5C%22%3A%5C%22%5C%22%2C%5C%22sdkToken%5C%22%3A%5C%22%5C%22%7D%22%7D'
-      header=headers
-      header['Cookie']=Cookiem
-      response=requests.post('https://ms.jr.jd.com/gw/generic/uc/h5/m/pigPetAddFood?_=1608957714442',headers=header,data=body)
-      print(response.text)
-
-    
-   except Exception as e:
-       print(str(e))
        
 def iosrule(functionId,body={}):
    url=JD_API_HOST+f'''&functionId={functionId}&isNeedDealError=true&body={urllib.parse.quote(json.dumps(body))}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel'''
