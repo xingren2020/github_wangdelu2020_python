@@ -156,7 +156,7 @@ def start():
      result=''
      print('第'+str(mm+1)+'🏆次运行开始')
      time.sleep(random.randint(1,4))
-     for j in range(2):
+     for j in range(len(btlist)):
        print(f'''===={str(j+1)}({len(btlist)})''')
        result+='['+str(len(btlist))+'-'+str(j+1)+']'
        hd=eval(hdlist[0])
