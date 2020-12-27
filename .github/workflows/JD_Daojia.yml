@@ -2,7 +2,7 @@ name: JD_Daojia
 
 on:
   schedule:
-    - cron: '25 22,5 * * * '
+    - cron: '*/20 * * * * '
   watch:
     types: [started]
 jobs:
