@@ -57,6 +57,8 @@ def watch(flag,list):
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in osenviron:
       vip = osenviron[flag]
+   if flag in os.environ:
+      vip = os.environ[flag]
    if vip:
        for line in vip.split('\n'):
          if not line:
