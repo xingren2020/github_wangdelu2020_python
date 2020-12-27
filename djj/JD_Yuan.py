@@ -18,6 +18,11 @@ djj_sever_jiang=''
 
 
 JD_API_HOST = 'https://daojia.jd.com/client?_jdrandom=1609034402844'
+zyheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
+
+
+djheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
+
 
 yuanck=''
 cookiesList=[]
