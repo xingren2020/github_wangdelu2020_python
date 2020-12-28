@@ -7,6 +7,7 @@ import random
 import timeit
 import urllib
 from datetime import datetime
+from dateutil import tz
 
 result=''
 djj_bark_cookie=''
@@ -149,10 +150,16 @@ def clock(func):
 @clock
 def start():
    global result,hd
+   newloop=3
    watch('ios_url',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
-   for mm in range(3):
+   today=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%H:%M", )
+   if(today[0:2]=='00' and int(today[3:5])<15):
+      tm=15-int(today[3:5])
+      time.sleep(tm*60)
+      newloop=2
+   for mm in range(newloop):
      result=''
      print('第'+str(mm+1)+'🏆次运行开始')
      time.sleep(random.randint(1,4))
