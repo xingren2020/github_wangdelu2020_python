@@ -17,13 +17,15 @@ djj_bark_cookie=''
 djj_sever_jiang=''
 
 
-JD_API_HOST = 'https://daojia.jd.com/client?_jdrandom=1608968590824'
+JD_API_HOST = 'https://daojia.jd.com/client?_jdrandom='
 url=''
 yuanck=''
 cookiesList=[]
 yuanckList=[]
 urlList=[]
 result=''
+
+activityId=''
 
 
 zyheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Content-Type": "application/x-www-form-urlencoded;","User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148________appName=jdLocal&platform=iOS&djAppVersion=8.3.0&supportDJSHWK","traceparent": "00-41efefb5fc0ac1984e57912247192866-74f60f509f5e0b12-01","Referer":"https://daojia.jd.com/taroh5/h5dist/"}
@@ -33,14 +35,29 @@ djheaders={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Langua
 
 
 def JD_Daojia():
-   
+   plantBeans_getActivityInfo()
    Daojia_getUserAccountInfo()
    showSignInMsgNew()
    tasklist_Daojia()
+   plantBeans_friendHelp()
 
 
+def plantBeans_getActivityInfo():
+   print('\n  plantBeans_getActivityInfo')
+   global activityId
+   try:
+     body ={}
+     body=urllib.parse.quote(json.dumps(body))
+     data=json.loads(iosrulex('functionId=plantBeans%2FgetActivityInfo&isNeedDealError=true&method=POST&body='+body).text)
+     activityId=data['result']['cur']['activityId']
+     print(activityId)
 
-     
+     return data
+
+   except Exception as e:
+       print(str(e))
+       
+       
 def showSignInMsgNew():
    print('\n showSignInMsgNew')
    try:
@@ -98,6 +115,7 @@ def tasklist_Daojia():
      #print(data)
      print('到家任务列表')
      for itm in data['result']['taskInfoList']:
+       m=''
        if itm['status']==3:
           m='【完成】'
        elif itm['status']==2:
@@ -118,6 +136,7 @@ def tasklist_Daojia():
             task_received(itm['modelId'],itm['taskId'],itm['taskType'])
             time.sleep(2)
             task_finished(itm['modelId'],itm['taskId'],itm['taskType'])
+            task_sendPrize(itm['modelId'],itm['taskId'],itm['taskType'])
             
          if itm['status']==2:
            if itm['taskType']==513:
@@ -168,12 +187,12 @@ def task_finished(modelId,taskId,taskType):
 
 
        
-def plantBeans_watering():
-   print('\n  plantBeans_watering')
+def plantBeans_friendHelp():
+   print('\n  plantBeans_friendHelp')
    try:
-     body ={"activityId":"23ad8d84d6addad"}
+     body ={"activityId":"23b972077009e05","groupId":"100006608792191"}
      body=urllib.parse.quote(json.dumps(body))
-     data=json.loads(iosrulex('functionId=plantBeans%2Fwatering&isNeedDealError=true&method=POST&body='+body).text)
+     data=json.loads(iosrule('xapp%2FfriendHelp%2Fdetail&isNeedDealError=true&method=POST&body='+body).text)
      print(data)
 
     
@@ -181,11 +200,16 @@ def plantBeans_watering():
        print(str(e))
        
        
-       
+
 
        
 def iosrule(functionId,body={}):
-   url=JD_API_HOST+f'''&functionId={functionId}&isNeedDealError=true&body={urllib.parse.quote(json.dumps(body))}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel'''
+   Localtime=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", )
+   
+   timeArray = time.strptime(Localtime, "%Y-%m-%d %H:%M:%S")
+   timeStamp = int(time.mktime(timeArray))
+   url=JD_API_HOST+f'''{timeStamp}&functionId={functionId}&isNeedDealError=true&body={urllib.parse.quote(json.dumps(body))}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel'''
+
    try:
       response=requests.get(url,headers=djheaders)
       return response
@@ -194,7 +218,11 @@ def iosrule(functionId,body={}):
 
 
 def iosrulex(body):
-   url=JD_API_HOST
+   Localtime=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", )
+   
+   timeArray = time.strptime(Localtime, "%Y-%m-%d %H:%M:%S")
+   timeStamp = int(time.mktime(timeArray))
+   url=JD_API_HOST+str(timeStamp)
    try:
       response=requests.post(url,headers=djheaders,data=body)
       return response
@@ -269,7 +297,7 @@ def pushmsg(title,txt,bflag=1,wflag=1):
    result =''
     
 def loger(m):
-   print(m)
+   #print(m)
    global result
    result +=m
     
@@ -297,18 +325,20 @@ def clock(func):
     
 @clock
 def start():
- 
-
+   
+   Localtime=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", )
+   
+   timeArray = time.strptime(Localtime, "%Y-%m-%d %H:%M:%S")
+   timeStamp = int(time.mktime(timeArray))
+   print('Localtime',Localtime)
+   
    global djheaders,zyheaders,url,yuanck
    check('DJJ_DAOJIA_COOKIE',cookiesList)
    check('DJJ_DAOJIA_URL',urlList)
    check('DJJ_YUAN_CK',yuanckList)
    j=0
-   #for i in range(2):
    for count in cookiesList:
         j+=1
-        if j!=1:
-          continue
         djheaders['Cookie']=count
         url=urlList[j-1]
         yuanck=yuanckList[j-1]
@@ -316,5 +346,6 @@ def start():
         JD_Daojia()
      #time.sleep(30)
    pushmsg('JD_DaoJia',result)
+   
 if __name__ == '__main__':
        start()
