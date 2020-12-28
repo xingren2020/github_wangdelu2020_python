@@ -7,28 +7,33 @@ import random
 import timeit
 import urllib
 from datetime import datetime
+from dateutil import tz
 
 result=''
 djj_bark_cookie=''
 djj_sever_jiang=''
-
+osenviron={}
 msg=''
 hd=''
 urllist=[]
 hdlist=[]
 btlist=[]
-redtm=0
+pn=1
+bx=0
+bxfb=0
+bxn=0
+bxfbn=0
+nome=False
+
+
 def Av(i,hd,k,key=''):
    print(str(k)+'=🔔='*k)
-   if(k==6):
-       time.sleep(31)
    try:
-     if(k==11):
+     if(k==5):
          response = requests.post(f'''{i}{key}''',headers=hd,data={},timeout=10)
      else:
          response = requests.get(f'''{i}{key}''',headers=hd,timeout=10)
-         #print(f'''{i}{key}''')
-     #print(response.text)
+
      userRes=json.loads(response.text)
      hand(userRes,k)
    except Exception as e:
@@ -44,6 +49,8 @@ def watch(flag,list):
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in os.environ:
       vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
    if vip:
        for line in vip.split('\n'):
          if not line:
@@ -55,36 +62,61 @@ def watch(flag,list):
        exit()
 def hand(userRes,k):
    msg=''
-   global redtm
-   if(userRes['code']==0):
+   global bx,bxfb,bxn,bxfbn,pn,nome
+   tm=''
+   
+   try:
+     if(userRes['code']==0):
        if(k==1):
-           msg+=f'''【{userRes['data']['user']['nickName'][0:4]}】'''
+           msg+=f'''{userRes['data']['user']['nickName'][0:2]}'''
+           print(msg)
        elif(k==2):
-            msg+=f'''|{userRes['data']['user']['amount']}'''
+            msg+=f'''|{userRes['data']['treasureBox']['count']}'''
+       
+       
        elif(k==3):
-             msg+=f'''|{userRes['data']['readTime']}min'''
-       elif(k==10):
-           if(userRes['msg']=='ok'):
-              for item in userRes['data']['pageParams']['readTimeRewardTask']:
-                  if item['enableFlag']==1 and item['doneFlag']==0:
-                      Av(urllist[11],hd,12,item['seconds'])
-              for item in userRes['data']['pageParams']['readTimeTask']:
-                    if item['enableFlag']==1 and item['doneFlag']==0:
-                       Av(urllist[12],hd,13,item['seconds'])
-       elif(k==14):
-           if(userRes['code']==0 and userRes['data'] ['hasPackage']):
-             redtm=userRes['data']['readTime']
-             #print(redtm)
-             #print(len(urllist))
-             #print(urllist[14])
-             Av(urllist[14],hd,15)
-       elif(k==15):
-         if userRes['code']==0:
-           for item in userRes['data']:
-                if(not item['isPick'] and item['readTime']<=redtm):
-                   Av(urllist[15],hd,16,item['readTime'])
-             
-   loger(msg)             
+         tm=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d", )
+         
+         
+         for tdata in userRes['data']['list']:
+           if tdata['content'][0:10]==tm:
+              if tdata['type']==240:
+                bx+=tdata['amount']
+                bxn+=1
+          
+         
+              elif tdata['type']==250:
+                bxfb+=tdata['amount']
+                bxfbn+=1
+              
+              
+           else:
+               nome=True
+               msg+='|'+str(bxn)+'-'+str(bx)+'|'+str(bxfbn)+'-'+str(bxfb)+'|'
+               break
+         
+         if (not nome):
+            pn+=1
+            Av(urllist[2]+str(pn),hd,3)
+        
+         
+         
+         
+         
+         print(msg)
+       elif(k==4):
+         msg+=f'''|{userRes['data']['amount']/10000}|{userRes['data']['expiringAmount']}|{userRes['data']['expiringDate']}|'''
+         if userRes['data']['amount']>100000:
+            Av(urllist[k],hd,(k+1))
+         ttm=0
+         for wdata in userRes['data']['withdrawList']:
+            ttm+=abs(wdata['amount'])/10000
+         msg+=str(ttm)+'|'
+       elif(k==5):
+         print(userRes['msg'])
+       loger(msg)
+   except Exception as e:
+      print(str(e))
 def pushmsg(title,txt,bflag=1,wflag=1):
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
@@ -105,7 +137,15 @@ def pushmsg(title,txt,bflag=1,wflag=1):
 def loger(m):
    #print(m)
    global result
-   result +=m                
+   result +=m     
+def getid(id):
+   lll=id.split(';')
+   for l in lll:
+     if l.find('ywguid=')>=0:
+      return l[(l.find('ywguid=')+7):len(l)]
+   
+      
+    
 def notice(b,e):
     ll=False
     start_time = datetime.strptime(str(datetime.now().date())+b, '%Y-%m-%d%H:%M')
@@ -130,26 +170,32 @@ def clock(func):
 @clock
 def start():
    global result,hd
-   watch('ios_url',urllist)
+   global bx,bxfb,bxn,bxfbn,pn,nome
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+   watch('ios_wturl',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
-   for mm in range(3):
-     result=''
-     time.sleep(random.randint(1,4))
-     for j in range(len(btlist)):
-       print(f'''===={str(j+1)}({len(urllist)})''')
+   for j in range(2):
+       bx=0
+       bxfb=0
+       bxn=0
+       bxfbn=0
+       pn=1
+       nome=False
+       print(f'''===={str(j+1)}({len(btlist)})''')
+       result+='['+str(len(btlist))+'-'+str(j+1)+']'
        hd=eval(hdlist[0])
        hd['Cookie']=btlist[j]
-       for k in range(len(urllist)):
-         if(k==11 or k==12 or k==14 or k==15):
-            continue
+       for k in range(len(urllist)-1):
          Av(urllist[k],hd,(k+1))
-     print(str(j+1)+'💎'*15+'干就完了')
-     result+='\n'
-     if mm<2:
-       time.sleep(600)
-   #if notice('4:00','5:00') or notice('22:00','23:00') or notice('13:00','14:00'):
+       result+=getid(btlist[j])+'\n'
+       print('🏆🏆🏆🏆运行完毕')
    pushmsg('公众号iosrule',result)
+     
+     
+    
+   
+     
 if __name__ == '__main__':
        start()
     
