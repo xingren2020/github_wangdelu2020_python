@@ -12,6 +12,7 @@ from dateutil import tz
 result=''
 djj_bark_cookie=''
 djj_sever_jiang=''
+djj_tele_cookie=''
 osenviron={}
 msg=''
 hd=''
@@ -43,8 +44,11 @@ def watch(flag,list):
    vip=''
    global djj_bark_cookie
    global djj_sever_jiang
+   global djj_tele_cookie
    if "DJJ_BARK_COOKIE" in os.environ:
-     djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+   if "DJJ_TELE_COOKIE" in os.environ:
+      djj_tele_cookie = os.environ["DJJ_TELE_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in os.environ:
@@ -117,13 +121,22 @@ def hand(userRes,k):
        loger(msg)
    except Exception as e:
       print(str(e))
-def pushmsg(title,txt,bflag=1,wflag=1):
+def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
       print("\n【通知汇总】")
       purl = f'''https://api.day.app/{djj_bark_cookie}/{title}/{txt}'''
       response = requests.post(purl)
+      #print(response.text)
+   if tflag==1 and djj_tele_cookie.strip():
+      print("\n【Telegram消息】")
+      id=djj_tele_cookie[djj_tele_cookie.find('@')+1:len(djj_tele_cookie)]
+      botid=djj_tele_cookie[0:djj_tele_cookie.find('@')]
+
+      turl=f'''https://api.telegram.org/bot{botid}/sendMessage?chat_id={id}&text={title}\n{txt}'''
+
+      response = requests.get(turl)
       #print(response.text)
    if wflag==1 and djj_sever_jiang.strip():
       print("\n【微信消息】")
@@ -175,7 +188,7 @@ def start():
    watch('ios_wturl',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
-   for j in range(2):
+   for j in range(len(btlist)):
        bx=0
        bxfb=0
        bxn=0
