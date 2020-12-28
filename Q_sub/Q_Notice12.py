@@ -109,7 +109,7 @@ def hand(userRes,k):
          
          print(msg)
        elif(k==4):
-         msg+=f'''|{userRes['data']['amount']/10000}|{userRes['data']['expiringAmount']}|{userRes['data']['expiringDate']}|'''
+         msg+=f'''{userRes['data']['amount']/10000}|{userRes['data']['expiringAmount']}|{userRes['data']['expiringDate']}|'''
          if userRes['data']['amount']>100000:
             Av(urllist[k],hd,(k+1))
          ttm=0
