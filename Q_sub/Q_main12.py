@@ -150,15 +150,18 @@ def clock(func):
 @clock
 def start():
    global result,hd
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
    newloop=3
    watch('ios_url',urllist)
    watch('ios_newhd',hdlist)
    watch('ios_newbt',btlist)
    today=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%H:%M", )
+   print('today ',today)
    if(today[0:2]=='00' and int(today[3:5])<15):
       tm=15-int(today[3:5])
       time.sleep(tm*60)
       newloop=2
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
    for mm in range(newloop):
      result=''
      print('第'+str(mm+1)+'🏆次运行开始')
@@ -176,8 +179,7 @@ def start():
      print('第'+str(mm+1)+'🏆🏆🏆🏆次运行完毕')
      if mm<2:
        time.sleep(600)
-   #if notice('4:00','5:00') or notice('22:00','23:00') or notice('13:00','14:00'):
-   #pushmsg('公众号iosrule',result)
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
      
      
     
