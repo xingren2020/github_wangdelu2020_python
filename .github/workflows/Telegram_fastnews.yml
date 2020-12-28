@@ -1,4 +1,4 @@
-name: telegram_fastnews
+name: Telegram_fastnews
 
 on:
   schedule:
@@ -21,6 +21,6 @@ jobs:
         run: pip install -r ./Q_sub/requirements.txt 
         
       - name: '公众号iosrule' 
-        run: python3 ./telegram/fastnews.py
+        run: python3 ./Telegram/fastnews.py
         env:
             DJJ_TELE_GROUP: ${{ secrets.DJJ_TELE_GROUP }}
