@@ -135,6 +135,7 @@ def start():
    watch('ios_newhd',hdlist)
    watch('ios_newbd',bdlist)
    watch('ios_newbt',btlist)
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
    time.sleep(random.randint(1,4))
    for j in range(len(btlist)):
        print(f'''===={str(j)}({len(btlist)})''')
@@ -145,7 +146,7 @@ def start():
        result+='【'+getid2(bdlist[j])[0:4]+'-'+getid1(btlist[j])[0:4]+'】\n'
        print('count'+str(j+1)+'💎运行完毕')
    print(result)
-
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
 if __name__ == '__main__':
        start()
     
