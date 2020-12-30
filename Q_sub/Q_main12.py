@@ -18,11 +18,51 @@ hd=''
 urllist=[]
 hdlist=[]
 btlist=[]
+newurllist=[]
 redtm=0
+bdlist=[]
 
-
-
-
+def Av2(i,hd,bd,k):
+   try:
+      print(str(k)+'=🔔='*k)
+      response = requests.post(i,headers=hd,data=bd,timeout=10).json()
+      if(response['code']==0):
+        print('成功....')
+      else:
+         print('失败....')
+   except Exception as e:
+      print(str(e))
+def Va2(i,hd,k):
+   try:
+      print(str(k)+'=🔔='*k)
+      response = requests.get(i,headers=hd,timeout=10)
+      Rs=response.json()
+      Tr=Rs['data']['transList']
+      for q in range(5):
+        Tm=time.localtime(float(Tr[q]['createTime']/1000))
+        Tm=time.strftime("%Y-%m-%d %H:%M:%S",Tm)
+        print(f'''【{Tm}】''',Tr[q]['amount'])
+   except Exception as e:
+      print(str(e))
+def fistme():
+   global result
+   today=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%H:%M", )
+   print('today:',today)
+   if(today[0:2]=='00' and int(today[3:5])<20):
+      tm=20-int(today[3:5])
+      time.sleep(tm*60)
+      print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+   for j in range(len(btlist)):
+       print(f'''===={str(j)}({len(btlist)})''')
+       hd=eval(hdlist[0])
+       hd['Cookie']=btlist[j]
+       Av2(newurllist[0],hd,bdlist[j],j+1)
+       Va2(newurllist[1],hd,j+1)
+       result+='【'+getid2(bdlist[j])[0:4]+'-'+getid1(btlist[j])[0:4]+'】\n'
+       print('count'+str(j+1)+'💎运行完毕')
+       print(result)
+       result=''
+       
 
 def Av(i,hd,k,key=''):
    print(str(k)+'=🔔='*k)
@@ -118,12 +158,17 @@ def loger(m):
    #print(m)
    global result
    result +=m     
-def getid(id):
+def getid1(id):
    lll=id.split(';')
    for l in lll:
      if l.find('ywguid=')>=0:
       return l[(l.find('ywguid=')+7):len(l)]
-   
+def getid2(id):
+   id=json.dumps(id)
+   lll=id.split(',')
+   for l in lll:
+     if l.find('guid')>=0:
+      return l[(l.find('guid')+7):len(l)]     
       
     
 def notice(b,e):
@@ -147,39 +192,40 @@ def clock(func):
         return result
     return clocked
     
+    
+    
+    
 @clock
 def start():
    global result,hd
    print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
    newloop=3
    watch('ios_url',urllist)
+   watch('ios_newurl',newurllist)
    watch('ios_newhd',hdlist)
+   watch('ios_newbd',bdlist)
    watch('ios_newbt',btlist)
-   today=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%H:%M", )
-   print('today ',today)
-   if(today[0:2]=='00' and int(today[3:5])<15):
-      tm=15-int(today[3:5])
-      time.sleep(tm*60)
-      newloop=2
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+   fistme()
    for mm in range(newloop):
      result=''
      print('第'+str(mm+1)+'🏆次运行开始')
      time.sleep(random.randint(1,4))
+     fistme()
      for j in range(len(btlist)):
        print(f'''===={str(j+1)}({len(btlist)})''')
        result+='['+str(len(btlist))+'-'+str(j+1)+']'
        hd=eval(hdlist[0])
        hd['Cookie']=btlist[j]
        for k in range(len(urllist)):
+         fistme()
          if(k==11 or k==12 or k==14 or k==15):
             continue
          Av(urllist[k],hd,(k+1))
-       result+=getid(btlist[j])+'\n'
+       result+=getid1(btlist[j])+'\n'
      print('第'+str(mm+1)+'🏆🏆🏆🏆次运行完毕')
      if mm<2:
        time.sleep(600)
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+     print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
      
      
     
