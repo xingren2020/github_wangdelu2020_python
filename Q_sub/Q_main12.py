@@ -49,21 +49,20 @@ def fistme():
    today=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%H:%M", )
    print('today:',today)
    if(today[0:2]=='00' and int(today[3:5])<20):
-      tm=20-int(today[3:5])
+      tm=19-int(today[3:5])
+      for j in range(len(btlist)):
+         print(f'''===={str(j)}({len(btlist)})''')
+         hd=eval(hdlist[0])
+         hd['Cookie']=btlist[j]
+         Av2(newurllist[0],hd,bdlist[j],j+1)
+         Va2(newurllist[1],hd,j+1)
+         result+='【'+getid2(bdlist[j])[0:4]+'-'+getid1(btlist[j])[0:4]+'】\n'
+         print('count'+str(j+1)+'💎运行完毕')
+         print(result)
+         result=''
       time.sleep(tm*60)
       print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   for j in range(len(btlist)):
-       print(f'''===={str(j)}({len(btlist)})''')
-       hd=eval(hdlist[0])
-       hd['Cookie']=btlist[j]
-       Av2(newurllist[0],hd,bdlist[j],j+1)
-       Va2(newurllist[1],hd,j+1)
-       result+='【'+getid2(bdlist[j])[0:4]+'-'+getid1(btlist[j])[0:4]+'】\n'
-       print('count'+str(j+1)+'💎运行完毕')
-       print(result)
-       result=''
-       
-
+      	
 def Av(i,hd,k,key=''):
    print(str(k)+'=🔔='*k)
    if(k==6):
@@ -199,7 +198,7 @@ def clock(func):
 def start():
    global result,hd
    print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   newloop=6
+   newloop=5
    watch('ios_url',urllist)
    watch('ios_newurl',newurllist)
    watch('ios_newhd',hdlist)
@@ -224,7 +223,7 @@ def start():
        result+=getid1(btlist[j])+'\n'
      print('第'+str(mm+1)+'🏆🏆🏆🏆次运行完毕')
      if mm<2:
-       time.sleep(60)
+       time.sleep(300)
      print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
      
      
