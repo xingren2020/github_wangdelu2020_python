@@ -62,10 +62,10 @@ def getzhuti():
    except Exception as e:
       msg=str(e)
       print(msg)
-   loger(msg1)
-   pushmsg('news',result)
-   loger(msg2)
-   pushmsg('news',result)
+   #loger(msg1)
+   pushmsg('news',msg1)
+   #loger(msg2)
+   pushmsg('news',msg2)
 
 def clock(func):
     def clocked(*args, **kwargs):
