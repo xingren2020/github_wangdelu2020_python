@@ -27,6 +27,8 @@ bxfbn=0
 nome=False
 
 
+
+
 def Av(i,hd,k,key=''):
    print(str(k)+'=🔔='*k)
    try:
@@ -109,7 +111,7 @@ def hand(userRes,k):
          
          print(msg)
        elif(k==4):
-         msg+=f'''{userRes['data']['amount']/10000}|{userRes['data']['expiringAmount']}|{userRes['data']['expiringDate']}|'''
+         msg+=f'''{userRes['data']['amount']/10000}|{userRes['data']['expiringAmount']}|{userRes['data']['expiringDate'][8:11]}|'''
          if userRes['data']['amount']>100000:
             Av(urllist[k],hd,(k+1))
          ttm=0
@@ -118,6 +120,8 @@ def hand(userRes,k):
          msg+=str(ttm)+'|'
        elif(k==5):
          print(userRes['msg'])
+       elif(k==6):
+         msg+=str(userRes['data']['readTime'])+'min|'
        loger(msg)
    except Exception as e:
       print(str(e))
@@ -199,11 +203,15 @@ def start():
        result+='['+str(len(btlist))+'-'+str(j+1)+']'
        hd=eval(hdlist[0])
        hd['Cookie']=btlist[j]
-       for k in range(len(urllist)-1):
+       for k in range(len(urllist)):
+         if k==4:
+           continue
          Av(urllist[k],hd,(k+1))
+         time.sleep(1)
        result+=getid(btlist[j])+'\n'
+       
        print('🏆🏆🏆🏆运行完毕')
-   pushmsg('公众号iosrule',result)
+   pushmsg('主库20200103',result)
      
      
     
