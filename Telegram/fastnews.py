@@ -1,3 +1,4 @@
+
 import requests
 import json
 import time
@@ -11,7 +12,9 @@ from dateutil import tz
 
 djj_tele_group=''
 osenviron={}
+telelist=[]
 result=''
+
 
 
 
@@ -62,10 +65,11 @@ def getzhuti():
    except Exception as e:
       msg=str(e)
       print(msg)
-   #loger(msg1)
-   pushmsg('news',msg1)
-   #loger(msg2)
-   pushmsg('news',msg2)
+   loger(msg1)
+   pushmsg('news1',result)
+   time.sleep(1)
+   loger(msg2)
+   pushmsg('news2',result)
 
 def clock(func):
     def clocked(*args, **kwargs):
@@ -92,8 +96,9 @@ def telegroup():
 def all():
    telegroup()
    getzhuti()
+   #print('💎',result)
+   #getgroupid()
    print('its over')
-
 
 
 
