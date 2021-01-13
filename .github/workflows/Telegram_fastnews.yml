@@ -2,7 +2,7 @@ name: Telegram_fastnews
 
 on:
   schedule:
-    - cron: '10 23,2,4,8,12 * * * '
+    - cron: '30 23,1,6,10,13 * * * '
   watch:
     types: [started]
 jobs:
