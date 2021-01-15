@@ -67,7 +67,7 @@ def getzhuti():
       print(msg)
    loger(msg1)
    pushmsg('news1',result)
-   time.sleep(1)
+   time.sleep(2)
    loger(msg2)
    pushmsg('news2',result)
 
@@ -116,7 +116,7 @@ def pushmsg(title,txt):
     
     
 def loger(m):
-   #print(m)
+   print(m)
    global result
    result =m
    
