@@ -260,7 +260,7 @@ def doEgg():
 def stealFriendWater(currentRoundId):
   try:
     sFriendList=json.loads(stealFriendList())
-    print(sFriendList)
+    #print(sFriendList)
     if (sFriendList['code'] == '0'):
       if (json.dumps(sFriendList).find('tips'))>0:
          print('偷取好友营养液今日已达上限')
@@ -304,11 +304,11 @@ def doGetReward(awardState,roundList,lastRoundId):
       msg +=f''' 【上期状态】{roundList[0]['tipBeanEndTitle']}\n''';
    elif (awardState =='5'):
        print('收获')
-       getReward= json.loads(getReward(lastRoundId))
+       getR= json.loads(getReward(lastRoundId))
        print('开始领取京豆');
-       if(getReward['code'] =='0'):
+       if(getR['code'] =='0'):
            print('京豆领取成功');
-           msg += f'''【上期兑换京豆】{getReward['data']['awardBean']}个\n`'''
+           msg += f'''【上期兑换京豆】{getR['data']['awardBean']}个\n`'''
  
    elif (awardState == '6'):
         print('京豆已领取')
