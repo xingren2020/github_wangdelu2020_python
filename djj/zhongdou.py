@@ -12,10 +12,16 @@ import os
 
 
 
-djj_sharecode=''
+
 djj_bark_cookie=''
 djj_sever_jiang=''
 djj_djj_cookie=''
+djj_tele_cookie=''
+osenviron={}
+
+
+
+
 
 
 currentRoundId =''#本期活动id
@@ -39,13 +45,9 @@ headers={
 }
 cookiesList=[]
 result=''
+hostlist=[]
+Defalt_ShareCode= ['7oivz2mjbmnx4bddymkpj42u75jmba2c6ga6eba','2vgtxj43q3jqzr2i5ac4uj2h6wxl66n4i326u3i','vru6a4ysi3bfl7an5j56nogtvzpn6mksrgozxzq']#读取参数
 
-Defalt_ShareCode= ['7oivz2mjbmnx4bddymkpj42u75jmba2c6ga6eba','2vgtxj43q3jqzr2i5ac4uj2h6wxl66n4i326u3i']#读取参数djj_sharecode为空，开始读取默认参数
-if "JD_API_HOST" in os.environ:
-      JD_API_HOST = os.environ["JD_API_HOST"]
-      if not JD_API_HOST:
-         print('over')
-         exit()
 def TotalBean(cookies,checkck):
    print('检验过期')
    signmd5=False
@@ -69,30 +71,27 @@ def TotalBean(cookies,checkck):
       signmd5=False
       msg=str(e)
       print(msg)
-      pushmsg('京东cookie',msg)
+      pushmsg('京东cookie过期',msg)
    return signmd5
 
 
 def jdPlantBean():
-   msg=''
-   print('京东种豆\n')
-   
+  msg=''
+  print('京东种豆\n')
+  try:
    plantBeanIndexResult=json.loads(plantBeanIndex())
-   #print(plantBeanIndexResult)
-   try:
-      #print(plantBeanIndexResult['data']['taskList'])
-      if (plantBeanIndexResult['code'] == '0'):
-          shareUrl = plantBeanIndexResult['data']['jwordShareInfo']['shareUrl']
-          myPlantUuid = re.compile('plantUuid=(.*)').findall(shareUrl)[0]
-          print(f'''\n【您的互助码】{myPlantUuid}\n''')
-          roundList=plantBeanIndexResult['data']['roundList']
-          currentRoundId = roundList[1]['roundId']#本期的roundId
-          lastRoundId = roundList[0]['roundId']#上期的roundId
-          awardState = roundList[0]['awardState']
-          taskList = plantBeanIndexResult['data']['taskList']
-          subTitle = f'''【京东昵称】{plantBeanIndexResult['data']['plantUserInfo']['plantNickName']}'''
-          msg += f'''【上期时间】{roundList[0]['dateDesc']}\n'''
-          msg += f'''【上期成长值】{roundList[0]['growth']}\n'''
+   if (plantBeanIndexResult['code'] == '0'):
+      shareUrl = plantBeanIndexResult['data']['jwordShareInfo']['shareUrl']
+      myPlantUuid = re.compile('plantUuid=(.*)').findall(shareUrl)[0]
+      print(f'''\n【您的互助码】{myPlantUuid}\n''')
+      roundList=plantBeanIndexResult['data']['roundList']
+      currentRoundId = roundList[1]['roundId']#本期的roundId
+      lastRoundId = roundList[0]['roundId']#上期的roundId
+      awardState = roundList[0]['awardState']
+      taskList = plantBeanIndexResult['data']['taskList']
+      subTitle = f'''【京东昵称】{plantBeanIndexResult['data']['plantUserInfo']['plantNickName']}'''
+      msg += f'''【上期时间】{roundList[0]['dateDesc']}\n'''
+      msg += f'''【上期成长值】{roundList[0]['growth']}\n'''
       receiveNutrients(currentRoundId)#定时领取营养液
       doHelp(myPlantUuid)#助力
       doTask(taskList)#做日常任务
@@ -102,9 +101,10 @@ def jdPlantBean():
       doGetReward(awardState,roundList,lastRoundId)
       showTaskProcess()
       plantShareSupportList()
-   except Exception as e:
+      loger(msg)
+  except Exception as e:
       msg=str(e)
-   print(msg)
+      print(msg)
 
 
 
@@ -112,6 +112,7 @@ def jdPlantBean():
 
 
 def doTask(taskList):
+  try:
    if (taskList and len(taskList) > 0):
     for item in taskList:
       print('次数','类型')
@@ -135,7 +136,7 @@ def doTask(taskList):
           print(signRes)
           if(signRes['code']=='0'):
              Bs=signRes['data']['dailyAward']
-             print(f'''{Bs['title']}{Be['subTitle']}{Be['beanAward']['beanCount']}京豆''')
+             print(f'''{Bs['title']}{Bs['subTitle']}{Bs['beanAward']['beanCount']}京豆''')
           receiveNutrientsTaskRes=receiveNutrientsTask(str(item['taskType']))
           print(f'''做 {item['taskName']}任务结果:{receiveNutrientsTaskRes}\n''')
          
@@ -233,12 +234,15 @@ def doTask(taskList):
           if (unFinishedChannelNum <= 0):
             print(f'''{item['taskName']}任务已做完\n''')
             break
-   
+  except Exception as e:
+      msg=str(e)
+      print(msg)
       
 def doEgg():
-   plantEggLotteryRes=json.loads(egg())
+   try:
+    plantEggLotteryRes=json.loads(egg())
    #print(plantEggLotteryRes)
-   if (plantEggLotteryRes['code'] == '0'):
+    if (plantEggLotteryRes['code'] == '0'):
       if (plantEggLotteryRes['data']['restLotteryNum'] > 0):
           eggL=plantEggLotteryRes['data']['restLotteryNum']
           print(f'''目前共有{eggL}次扭蛋的机会''')
@@ -248,17 +252,21 @@ def doEgg():
               print(f'''天天扭蛋成功：{plantEggDoLotteryResult}''')
       else:
          print('暂无扭蛋机会')
-   else:
-       print('查询天天扭蛋的机会失败')
+    else:
+     print('查询天天扭蛋的机会失败')
+   except Exception as e:
+      msg=str(e)
+      print(msg)
 def stealFriendWater(currentRoundId):
-  sFriendList=json.loads(stealFriendList())
-  print(sFriendList)
-  if (sFriendList['code'] == '0'):
-    if (json.dumps(sFriendList).find('tips'))>0:
-       print('偷取好友营养液今日已达上限')
-       return
-    if (sFriendList['data'] and sFriendList['data']['friendInfoList'] and len(sFriendList['data']['friendInfoList']) > 0):
-      for item in sFriendList['data']['friendInfoList']:
+  try:
+    sFriendList=json.loads(stealFriendList())
+    print(sFriendList)
+    if (sFriendList['code'] == '0'):
+      if (json.dumps(sFriendList).find('tips'))>0:
+         print('偷取好友营养液今日已达上限')
+         return
+      if (sFriendList['data'] and sFriendList['data']['friendInfoList'] and len(sFriendList['data']['friendInfoList']) > 0):
+       for item in sFriendList['data']['friendInfoList']:
         if (json.dumps(item).find('nutrCount'))<0:
           print('好友暂无营养液可以偷')
           continue
@@ -268,7 +276,11 @@ def stealFriendWater(currentRoundId):
           if (stealFriendRes['code']== '0'):
             print('偷取好友营养液成功')
           time.sleep(3)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def doCultureBean(plantBeanIndexResult):
+  try:
    if (plantBeanIndexResult['code'] == '0'):
       plantBeanRound=plantBeanIndexResult['data']['roundList'][1]
       if (plantBeanRound['roundState'] == '2'):
@@ -280,8 +292,11 @@ def doCultureBean(plantBeanIndexResult):
            time.sleep(2)
    else:
       print(f'''plantBeanIndexResult:{plantBeanIndexResult}''')
-  
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def doGetReward(awardState,roundList,lastRoundId):
+  try:
    print('上期兑换京豆')
    msg=''
    if (awardState == '4'):
@@ -299,12 +314,17 @@ def doGetReward(awardState,roundList,lastRoundId):
         print('京豆已领取')
         msg += f'''【上期兑换京豆】{roundList[0]['awardBeans']}个\n'''
         dDs=roundList[1]['dateDesc']
-        if (dDs.find('本期')>=0):
+        
+        if (json.dumps(dDs).find('本期')>=0):
             dDs = dDs[dDs.find('本期')+3:len(roundList[1].dateDesc)]
-        msg += f'''【本期时间】{ds}\n'''
+        msg += f'''【本期时间】{dDs}\n'''
         msg += f'''【本期成长值】{roundList[1]['growth']}\n'''
-   print(msg)
+   loger(msg)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def showTaskProcess():
+  try:
    print('任务进度')
    plantBeanIndexResult=json.loads(plantBeanIndex())
    print(plantBeanIndexResult)
@@ -314,8 +334,11 @@ def showTaskProcess():
       for item in taskList:
         print(f'''[{item["taskName"]}]  {item["gainedNum"]}/{item["totalNum"]}   {item["isFinished"]}''')
 	
-
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def plantShareSupportList():
+  try:
    msg='【助力您的好友】'
    print(msg)
    shareSupportList =json.loads(iosrule(sys._getframe().f_code.co_name,{"roundId": ""}))
@@ -326,7 +349,9 @@ def plantShareSupportList():
        print(msg)
    else:
        print(f'''异常情况：{shareSupportList}''')
-    
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 	
 def stealFriendList():
    body = {
@@ -460,18 +485,10 @@ def helpShare(plantUuid):
        print(str(e))
 def shareCodesFormat():
    newShareCodes = []
-  # print(ShareCode)
-   #ShareCode=''
-   if(djj_sharecode):
-      for line in djj_sharecode.split('\n'):
-         if not line:
-          continue 
-         newShareCodes.append(line)
-   else:
-        print('Github助力码参数读取空，开始读取默认助力码')
-        readShareCodeRes = readShareCode()
-        if (readShareCodeRes and readShareCodeRes['code'] == 200):
-           newShareCodes=Defalt_ShareCode+readShareCodeRes['data']
+   print('开始读取默认助力码')
+   readShareCodeRes = readShareCode()
+   if (readShareCodeRes and readShareCodeRes['code'] == 200):
+       newShareCodes=Defalt_ShareCode+readShareCodeRes['data']
             
    print(f'''京东账号将要助力的好友{newShareCodes}''')
    return newShareCodes
@@ -513,18 +530,10 @@ def readShareCode():
 
 def shareCodesFormat():
    newShareCodes = []
-  # print(ShareCode)
-   #ShareCode=''
-   if(djj_sharecode):
-      for line in djj_sharecode.split('\n'):
-         if not line:
-          continue 
-         newShareCodes.append(line)
-   else:
-        print('Github助力码参数读取空，开始读取默认助力码')
-        readShareCodeRes = readShareCode()
-        if (readShareCodeRes and readShareCodeRes['code'] == 200):
-          newShareCodes=Defalt_ShareCode+readShareCodeRes['data']
+   print('开始读取默认助力码')
+   readShareCodeRes = readShareCode()
+   if (readShareCodeRes and readShareCodeRes['code'] == 200):
+       newShareCodes=Defalt_ShareCode+readShareCodeRes['data']
             
             
    print(f'''京东账号将要助力的好友{newShareCodes}''')
@@ -539,51 +548,61 @@ def iosrule(mod,body={}):
       print(f'''初始化{mode}任务:''', str(e))
       
       
-def check():
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   global djj_djj_cookie
+def check(flag,list):
+   vip=''
    global djj_bark_cookie
    global djj_sever_jiang
-   global JD_API_HOST
+   global djj_tele_cookie
    if "DJJ_BARK_COOKIE" in os.environ:
-     djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+   if "DJJ_TELE_COOKIE" in os.environ:
+      djj_tele_cookie = os.environ["DJJ_TELE_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
-   if "DJJ_DJJ_COOKIE" in os.environ:
-      djj_djj_cookie = os.environ["DJJ_DJJ_COOKIE"]
-      for line in djj_djj_cookie.split('\n'):
-        if not line:
-          continue 
-        cookiesList.append(line.strip())
-   elif djj_djj_cookie:
-       for line in djj_djj_cookie.split('\n'):
+   if flag in os.environ:
+      vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
+   if vip:
+       for line in vip.split('\n'):
          if not line:
             continue 
-         cookiesList.append(line.strip())
+         list.append(line.strip())
+       return list
    else:
-     print('DTask is over.')
-     exit()
+       pass
+       
 
-def pushmsg(title,txt,bflag=1,wflag=1):
+def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
+  try:
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
-      print("\n【通知汇总】")
+      print("\n【Bark通知】")
       purl = f'''https://api.day.app/{djj_bark_cookie}/{title}/{txt}'''
       response = requests.post(purl)
       #print(response.text)
+   if tflag==1 and djj_tele_cookie.strip():
+      print("\n【Telegram通知】")
+      id=djj_tele_cookie[djj_tele_cookie.find('@')+1:len(djj_tele_cookie)]
+      botid=djj_tele_cookie[0:djj_tele_cookie.find('@')]
+
+      turl=f'''https://api.telegram.org/bot{botid}/sendMessage?chat_id={id}&text={title}\n{txt}'''
+
+      response = requests.get(turl)
+      #print(response.text)
    if wflag==1 and djj_sever_jiang.strip():
-      print("\n【微信消息】")
+      print("\n【微信通知】")
       purl = f'''http://sc.ftqq.com/{djj_sever_jiang}.send'''
       headers={
     'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
     }
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
-   global result
-   print(result)
-   result =''
-    
+    #print(response.text)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def loger(m):
    print(m)
    global result
@@ -591,7 +610,7 @@ def loger(m):
     
 def DJJ_main():
    jdPlantBean()
-  # pushmsg('种豆',result)
+   pushmsg('种豆',result)
    
    
    
@@ -608,13 +627,19 @@ def clock(func):
     
 @clock
 def start():
-   check()
-   #print(cookiesList)
+   global cookiesList,hostlist,JD_API_HOST
+   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
+   check('DJJ_DJJ_COOKIE',cookiesList)
+   check('JD_API_HOST',hostlist)
+   if len(hostlist)<1 or len(cookiesList)<0:
+      print('no data......')
+      exit()
+   JD_API_HOST=hostlist[0]
    j=0
    for count in cookiesList:
      j+=1
-     #if j!=1:
-       #continue
+     if j!=2:
+       continue
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
@@ -623,8 +648,6 @@ def start():
      headers['Cookie']=count
      if(TotalBean(count,newstr)):
          DJJ_main()
-def main_handler(event, context):
-    return start()
-
+   print('🏆🏆🏆🏆运行完毕')
 if __name__ == '__main__':
        start()
