@@ -1,8 +1,8 @@
-name: DJ_MS
+name: DJ_geziyaya
 
 on:
   schedule:
-    - cron: '15 22,0,4,8 * * * '
+    - cron: '15 22,0,8,14 * * * '
   watch:
     types: [started]
 jobs:
@@ -21,12 +21,9 @@ jobs:
         run: pip install -r ./djj/requirements.txt 
         
       - name: '公众号iosrule' 
-        run: python3 ./djj/JD_MS.py 
+        run: python3 ./djj/JD_geziyaya.py 
         env:
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
             DJJ_TELE_COOKIE: ${{ secrets.DJJ_TELE_COOKIE }}
             DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
-            DJJ_XFJ_HEADERS: ${{ secrets.DJJ_XFJ_HEADERS }}
-            
-            
