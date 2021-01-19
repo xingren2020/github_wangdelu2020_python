@@ -638,8 +638,8 @@ def start():
    j=0
    for count in cookiesList:
      j+=1
-     if j!=2:
-       continue
+     #if j!=2:
+       #continue
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
