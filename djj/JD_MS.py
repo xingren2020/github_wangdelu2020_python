@@ -10,15 +10,20 @@ from datetime import datetime
 from dateutil import tz
 import os
 
+
+result=''
 osenviron={}
 headers={}
 
 djj_bark_cookie=''
 djj_sever_jiang=''
-djj_xfj_headers=''
 djj_djj_cookie=''
+djj_tele_cookie=''
+
 
 encryptProjectId=''
+cookiesList=[]
+xfj_hdlist=[]
 
 
 
@@ -28,7 +33,15 @@ encryptProjectId=''
 
 
 
-result=''
+
+
+
+
+
+
+
+
+
 JD_API_HOST = 'https://api.m.jd.com/client.action'
 def TotalBean(cookies,checkck):
    print('检验过期')
@@ -42,12 +55,10 @@ def TotalBean(cookies,checkck):
        ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers,timeout=10).json()
        if ckresult['retcode']==0:
            signmd5=True
-           print(f'''【京东{checkck}】''')
        else:
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
-       	  print(msg)
-          pushmsg(msg)
+          pushmsg('主库_更新数据',msg)
    except Exception as e:
       signmd5=False
       msg=str(e)
@@ -70,6 +81,7 @@ def JD_getActInfo():
    try:
       global encryptProjectId
       bd={}
+      headers['Content-Type']='application/x-www-form-urlencoded'
       body=f'''functionId=assignmentList&body={urllib.parse.quote(json.dumps(bd))}&client=wh5&clientVersion=9.3.2&appid=jwsp'''
       rs= requests.post(JD_API_HOST,headers=headers,data=body,timeout=10).json()
       if (rs['code'] == 200):
@@ -84,14 +96,17 @@ def JD_getUserInfo():
    try:
       
       bd={}
+      msg=''
       body=f'''functionId=homePageV2&body={urllib.parse.quote(json.dumps(bd))}&client=wh5&clientVersion=9.3.2&appid=SecKill2020'''
+      headers['Content-Type']='application/x-www-form-urlencoded'
       rs= requests.post(JD_API_HOST,data=body,headers=headers,timeout=10).json()
       if (rs['code'] == 2041):
         score = rs['result']['assignment']['assignmentPoints']
-        msg='|当前秒秒币'+str(score)
-        loger(msg)
+        msg+='|当前秒秒币'+str(score)
       else:
+         msg+='无秒币'
          print('无秒币')
+      loger(msg)
    except Exception as e:
       msg=str(e)
       print(msg)
@@ -104,6 +119,7 @@ def JD_getTaskList():
    try:
       bd = {"encryptProjectId": encryptProjectId, "sourceCode": "wh5"}
       body=f'''functionId=queryInteractiveInfo&body={urllib.parse.quote(json.dumps(bd))}&client=wh5&clientVersion=9.3.2'''
+      headers['Content-Type']='application/x-www-form-urlencoded'
       rs= requests.post(JD_API_HOST,headers=headers,data=body,timeout=10).text
       rs=rs.replace('false','False')
       rs=rs.replace('true','True')
@@ -150,6 +166,7 @@ def doTask(body):
       bd = {"encryptProjectId": encryptProjectId, "sourceCode": "wh5", "ext": {}}
       bd.update(body)
       body=f'''functionId=doInteractiveAssignment&body={urllib.parse.quote(json.dumps(bd))}&client=wh5&clientVersion=9.3.2&'''
+      headers['Content-Type']='application/x-www-form-urlencoded'
       rs= requests.post(JD_API_HOST,headers=headers,data=body,timeout=10).text
       print(rs)
    except Exception as e:
@@ -165,8 +182,11 @@ def check(flag,list):
    vip=''
    global djj_bark_cookie
    global djj_sever_jiang
+   global djj_tele_cookie
    if "DJJ_BARK_COOKIE" in os.environ:
-     djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+   if "DJJ_TELE_COOKIE" in os.environ:
+      djj_tele_cookie = os.environ["DJJ_TELE_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in os.environ:
@@ -183,7 +203,9 @@ def check(flag,list):
        print(f'''【{flag}】 is empty,DTask is over.''')
        exit()
        
+       
 def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
+  try:
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
@@ -209,23 +231,22 @@ def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
     #print(response.text)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
     
 def loger(m):
-   print(m)
    global result
-   result +=m+'\n'
-def getid(st):
-   for k in st.split(';'):
-      if k.strip().find('pt_pin=')==0:
-        nm=k[(k.find('pt_pin=')+7):len(k)]
-        nm=urllib.parse.unquote(nm)
-        return nm
+   result +=m
+
 def islogon(j,count):
     JD_islogn=False 
     for i in count.split(';'):
        if i.find('pin=')>=0:
-          newstr=i.strip()[i.find('pin=')+4:len(i)]
-          print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr}''')
+          newstr=i[(i.find('pt_pin=')+7):len(i)]
+          print(f'''【账号{str(j)}】''')
+          msg=f'''【账号{str(j)}】{urllib.parse.unquote(newstr)}|'''
+          loger(msg)
     if(TotalBean(count,newstr)):
         JD_islogn=True
     return JD_islogn
@@ -243,11 +264,8 @@ def clock(func):
     
 @clock
 def start():
-   cookiesList=[]
-   xfj_hdlist=[]
-   global headers,result
-   global djj_djj_cookie
-   check('DJJ_XFJ_HEADERS',xfj_hdlist)
+   global headers,result,xfj_hdlist,cookiesList
+   check('DJJ_XFJ_NEWHEADERS',xfj_hdlist)
    check('DJJ_DJJ_COOKIE',cookiesList)
    j=0
    for count in cookiesList:
@@ -255,9 +273,9 @@ def start():
      headers=eval(xfj_hdlist[0])
      headers['Cookie']=count
      headers['Origin']='https://h5.m.jd.com'
-     result+='【count】'+getid(count)
      if(islogon(j,count)):
          JD_miaosha()
+     result+='\n'
    pushmsg('JD_ms',result)
 if __name__ == '__main__':
        start()
