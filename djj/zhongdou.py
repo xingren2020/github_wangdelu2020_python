@@ -12,14 +12,12 @@ import os
 
 
 
-
+result=''
 djj_bark_cookie=''
 djj_sever_jiang=''
 djj_djj_cookie=''
 djj_tele_cookie=''
 osenviron={}
-
-
 
 
 
@@ -51,7 +49,6 @@ Defalt_ShareCode= ['7oivz2mjbmnx4bddymkpj42u75jmba2c6ga6eba','2vgtxj43q3jqzr2i5a
 def TotalBean(cookies,checkck):
    print('检验过期')
    signmd5=False
-   global iosrule
    headers= {
         "Cookie": cookies,
         "Referer": 'https://home.m.jd.com/myJd/newhome.action?',
@@ -61,20 +58,29 @@ def TotalBean(cookies,checkck):
        ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers,timeout=10).json()
        if ckresult['retcode']==0:
            signmd5=True
-           loger(f'''【京东{checkck}】''')
        else:
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
-       	  print(msg)
-          pushmsg(msg)
+          pushmsg('主库_更新数据',msg)
    except Exception as e:
       signmd5=False
       msg=str(e)
       print(msg)
-      pushmsg('京东cookie过期',msg)
+      pushmsg('京东cookie',msg)
    return signmd5
 
-
+def islogon(j,count):
+    JD_islogn=False 
+    for i in count.split(';'):
+       if i.find('pin=')>=0:
+          newstr=i[(i.find('pt_pin=')+7):len(i)]
+          print(f'''【账号{str(j)}】''')
+          msg=f'''【账号{str(j)}】{urllib.parse.unquote(newstr)}|'''
+          loger(msg)
+    if(TotalBean(count,newstr)):
+        JD_islogn=True
+    return JD_islogn
+    
 def jdPlantBean():
   msg=''
   print('京东种豆\n')
@@ -90,8 +96,8 @@ def jdPlantBean():
       awardState = roundList[0]['awardState']
       taskList = plantBeanIndexResult['data']['taskList']
       subTitle = f'''【京东昵称】{plantBeanIndexResult['data']['plantUserInfo']['plantNickName']}'''
-      msg += f'''【上期时间】{roundList[0]['dateDesc']}\n'''
-      msg += f'''【上期成长值】{roundList[0]['growth']}\n'''
+      msg += f'''【上期时间】{roundList[0]['dateDesc']}|'''
+      msg += f'''【上期成长值】{roundList[0]['growth']}|'''
       receiveNutrients(currentRoundId)#定时领取营养液
       doHelp(myPlantUuid)#助力
       doTask(taskList)#做日常任务
@@ -308,17 +314,17 @@ def doGetReward(awardState,roundList,lastRoundId):
        print('开始领取京豆');
        if(getR['code'] =='0'):
            print('京豆领取成功');
-           msg += f'''【上期兑换京豆】{getR['data']['awardBean']}个\n`'''
+           msg += f'''【上期兑换京豆】{getR['data']['awardBean']}个|`'''
  
    elif (awardState == '6'):
         print('京豆已领取')
-        msg += f'''【上期兑换京豆】{roundList[0]['awardBeans']}个\n'''
+        msg += f'''【上期兑换京豆】{roundList[0]['awardBeans']}个|'''
         dDs=roundList[1]['dateDesc']
         
         if (json.dumps(dDs).find('本期')>=0):
             dDs = dDs[dDs.find('本期')+3:len(roundList[1].dateDesc)]
-        msg += f'''【本期时间】{dDs}\n'''
-        msg += f'''【本期成长值】{roundList[1]['growth']}\n'''
+        msg += f'''【本期时间】{dDs}|'''
+        msg += f'''【本期成长值】{roundList[1]['growth']}|'''
    loger(msg)
   except Exception as e:
       msg=str(e)
@@ -327,7 +333,7 @@ def showTaskProcess():
   try:
    print('任务进度')
    plantBeanIndexResult=json.loads(plantBeanIndex())
-   print(plantBeanIndexResult)
+   #print(plantBeanIndexResult)
    taskList = plantBeanIndexResult['data']['taskList']
    if (taskList and len(taskList) > 0):
       print('任务           进度')
@@ -570,7 +576,9 @@ def check(flag,list):
          list.append(line.strip())
        return list
    else:
-       pass
+       print(f'''【{flag}】 is empty,DTask is over.''')
+       exit()
+       
        
 
 def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
@@ -604,13 +612,12 @@ def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
       msg=str(e)
       print(msg)
 def loger(m):
-   print(m)
    global result
-   result +=m+'\n'
+   result +=m
     
 def DJJ_main():
    jdPlantBean()
-   pushmsg('种豆',result)
+   
    
    
    
@@ -627,7 +634,7 @@ def clock(func):
     
 @clock
 def start():
-   global cookiesList,hostlist,JD_API_HOST
+   global cookiesList,hostlist,JD_API_HOST,result
    print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
    check('DJJ_DJJ_COOKIE',cookiesList)
    check('JD_API_HOST',hostlist)
@@ -638,16 +645,11 @@ def start():
    j=0
    for count in cookiesList:
      j+=1
-     #if j!=2:
-       #continue
-     oldstr = count.split(';')
-     for i in oldstr:
-       if i.find('pin=')>=0:
-          newstr=i.strip()[i.find('pin=')+4:len(i)]
-          print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr}''')
      headers['Cookie']=count
-     if(TotalBean(count,newstr)):
+     if(islogon(j,count)):
          DJJ_main()
+     result+='\n'
+   pushmsg('主库-种豆',result)
    print('🏆🏆🏆🏆运行完毕')
 if __name__ == '__main__':
        start()
