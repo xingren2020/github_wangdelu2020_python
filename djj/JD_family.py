@@ -10,35 +10,24 @@ from datetime import datetime
 from dateutil import tz
 import os
 
+result=''
 osenviron={}
-
-
+headers={}
 djj_bark_cookie=''
 djj_sever_jiang=''
-djj_xfj_token=''
-djj_xfj_headers=''
 djj_djj_cookie=''
-
-
-
-
-
-headers={"Accept": "*/*","Accept-Encoding": "br, gzip, deflate","Accept-Language": "zh-cn","Host": "wq.jd.com","Referer": "https://lgame.jd.com/babelDiy/Zeus/2dJDkTg31SrzZDAS74ozoKArg7hu/index.html?lng=113.627812&lat=23.278284&sid=632429371578e01154b220fb71e84a0w&un_area=19_1601_50284_50451","User-Agent": "jdapp;iPhone;9.2.4;12.4;3c6b06b6a8d9cc763215d2db748273edc4e02512;network/wifi;ADID/B38160D2-DC94-4414-905B-D15F395FD787;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone11,8;addressid/3529080897;supportBestPay/0;appBuild/167432;pushNoticeIsOpen/0;jdSupportDarkMode/0;pv/111.4;apprpd/JingDou_Detail;ref/JingDou_Detail_Contrller;psq/3;ads/;psn/3c6b06b6a8d9cc763215d2db748273edc4e02512|259;jdv/0|kong|t_1001848278_|jingfen|dcdae1aff03e4544a2abe5b1fea7ff3b|1606876124750|1606876163;adk/;app_device/IOS;pap/JA2015_311210|9.2.4|IOS 12.4;Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",}
-
-
-
-
-
-
+djj_tele_cookie=''
+cookiesList=[]
+hdList=[]
+shopid=''
+info={}
+Taskinfo={}
 
 
 
 
 
 
-#删除
-result=''
-JD_API_HOST = 'https://wq.jd.com/activep3/family/'
 def TotalBean(cookies,checkck):
    print('检验过期')
    signmd5=False
@@ -51,7 +40,7 @@ def TotalBean(cookies,checkck):
        ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers,timeout=10).json()
        if ckresult['retcode']==0:
            signmd5=True
-           loger(f'''【京东{checkck}】''')
+           print(f'''【京东{checkck}】''')
        else:
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
@@ -64,55 +53,80 @@ def TotalBean(cookies,checkck):
       pushmsg('京东cookie',msg)
    return signmd5
 
-
 def JD_family():
-   print('family_query\n')
-   try:
-      queryRes=family_query()
-      queryRes=json.loads(queryRes[18:-14].strip())
-      Tasklst=queryRes['tasklist']
-      print(Tasklst)
-      for item in Tasklst:
-        doTask(item['taskid'])
-        time.sleep(2)
-        queryRes=family_query()
-      queryRes=json.loads(queryRes[18:-14].strip())
-      Tasklst=queryRes['tasklist']
-      print(Tasklst)
-   except Exception as e:
-      msg=str(e)
-      print(msg)
+   family_info()
+   family_query()
+   family_taskdone()
+   family_query(True)
 
+def family_taskdone():
+    try:
+     for ts in info['config']['tasks']:
+          print(ts['_id'])
+          doTask(ts['_id'])
+          time.sleep(2)
+    except Exception as e:
+      print(f'''family_info''', str(e))
 
-
-
+def family_info():
+    global info
+    try:
+     url='https://anmp.jd.com/babelDiy/Zeus/2ZpHzZdUuvWxMJT4KXuRdK6NPj3D/index.html?'
+     rs=requests.get(url,headers=headers)
+     rs.encoding=rs.apparent_encoding
+     rs=rs.text
+     txt=re.compile('var snsConfig = (.*)').findall(rs)
+     tmp=txt[0]
+     info=json.loads(tmp)
+     print('startTime:',info['startTime'])
+     print('endTime:',info['endTime'])
+     #print(info)
+    except Exception as e:
+      print(f'''family_info''', str(e))
+    
 
 
 def doTask(taskId):
-    TaskRes=iosrule('family_task',f'''taskid={taskId}&''')
-    print(TaskRes)
-    return TaskRes
-
-def family_query():
-    getTaskRes=iosrule('family_query')
-    print(getTaskRes)
-    return getTaskRes
-    
-def iosrule(mod,task=''):
-   tm=round(time.time()*1000)
-   url=JD_API_HOST+f'''{mod}?activeid=10073670&token=92602dfb7b63776469a06deef1a45021&sceneval=2&{task}&callback=CheckParamsf&_={tm}'''
    try:
-     response=requests.get(url,headers=headers).text
-     return response
+     url='https://wq.jd.com/activep3/family/family_task?activeid='+info['activeId']+'&token='+info['actToken']+'&sceneval=2&t='+tm13()+'&taskid='+taskId+'&callback=CheckParamsk&_='+tm13()
+     headers['Referer']='https://anmp.jd.com/babelDiy/Zeus/2ZpHzZdUuvWxMJT4KXuRdK6NPj3D/index.html?sid=48f799c83f7c55bfc3eedd9882a20c8w&'
+     rs=requests.get(url,headers=headers)
+     rs.encoding=rs.apparent_encoding
+     rs=rs.text
+     txt=rs[rs.find('({')+1:rs.find(');')]
+     shop=json.loads(txt)
+     #print(shop)
    except Exception as e:
-      print(f'''初始化{mode}任务:''', str(e))
-      
+      print(f'''doTask''', str(e))
+
+def family_query(X=False):
+    global info,Taskinfo
+    try:
+     url='https://wq.jd.com/activep3/family/family_query?activeid='+info['activeId']+'&token='+info['actToken']+'&sceneval=2&t=&callback=CheckParamsl&_='
+     headers['Referer']='https://anmp.jd.com/babelDiy/Zeus/2ZpHzZdUuvWxMJT4KXuRdK6NPj3D/index.html?'
+     rs=requests.get(url,headers=headers)
+     rs.encoding=rs.apparent_encoding
+     rs=rs.text
+     txt=re.compile('CheckParamsl\((.*)').findall(rs)
+     #print(txt)
+     tmp=txt[0]
+     Taskinfo=json.loads(tmp)
+     msg='幸福值:'+Taskinfo['tatalprofits']
+     if X==True:
+       loger(msg)
+    except Exception as e:
+      print(f'''family_query''', str(e))
+    
+
 def check(flag,list):
    vip=''
    global djj_bark_cookie
    global djj_sever_jiang
+   global djj_tele_cookie
    if "DJJ_BARK_COOKIE" in os.environ:
-     djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+   if "DJJ_TELE_COOKIE" in os.environ:
+      djj_tele_cookie = os.environ["DJJ_TELE_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
    if flag in os.environ:
@@ -129,13 +143,23 @@ def check(flag,list):
        print(f'''【{flag}】 is empty,DTask is over.''')
        exit()
        
-def pushmsg(title,txt,bflag=1,wflag=1):
+def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
+  try:
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
       print("\n【通知汇总】")
       purl = f'''https://api.day.app/{djj_bark_cookie}/{title}/{txt}'''
       response = requests.post(purl)
+      #print(response.text)
+   if tflag==1 and djj_tele_cookie.strip():
+      print("\n【Telegram消息】")
+      id=djj_tele_cookie[djj_tele_cookie.find('@')+1:len(djj_tele_cookie)]
+      botid=djj_tele_cookie[0:djj_tele_cookie.find('@')]
+
+      turl=f'''https://api.telegram.org/bot{botid}/sendMessage?chat_id={id}&text={title}\n{txt}'''
+
+      response = requests.get(turl)
       #print(response.text)
    if wflag==1 and djj_sever_jiang.strip():
       print("\n【微信消息】")
@@ -145,21 +169,30 @@ def pushmsg(title,txt,bflag=1,wflag=1):
     }
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
-   global result
-   print(result)
-   result =''
+    #print(response.text)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
     
 def loger(m):
-   print(m)
+   #print(m)
    global result
-   result +=m+'\n'
+   result +=m
+def tm13():
+   Localtime=datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S.%f", )
+   timeArray = datetime.strptime(Localtime, "%Y-%m-%d %H:%M:%S.%f")
+   timeStamp = int(time.mktime(timeArray.timetuple())*1000+timeArray.microsecond/1000)
+   return str(timeStamp)   
     
 def islogon(j,count):
     JD_islogn=False 
     for i in count.split(';'):
        if i.find('pin=')>=0:
           newstr=i.strip()[i.find('pin=')+4:len(i)]
-          print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr}''')
+          
+          msg=f'''【账号{str(j)}】{newstr}|'''
+          print('>>>>>>>>>'+msg)
+          loger(msg)
     if(TotalBean(count,newstr)):
         JD_islogn=True
     return JD_islogn
@@ -177,17 +210,19 @@ def clock(func):
     
 @clock
 def start():
-   cookiesList=[]
-   global headers
+   global cookiesList,hdList
+   global headers,result
    check('DJJ_DJJ_COOKIE',cookiesList)
-   
+   check('DJJ_XFJ_NEWHEADERS',hdList)
    j=0
    for count in cookiesList:
      j+=1
+     headers=eval(hdList[0])
      headers['Cookie']=count
- 
      if(islogon(j,count)):
          JD_family()
-
+     time.sleep(10)
+     result+='\n'
+   pushmsg('主库-XFJ',result)
 if __name__ == '__main__':
        start()
