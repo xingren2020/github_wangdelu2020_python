@@ -2,7 +2,7 @@ name: djj_family
 
 on:
   schedule:
-    - cron: '1 0-23/2 * * * '
+    - cron: '1 0-15/2 * * * '
   watch:
     types: [started]
 jobs:
@@ -26,3 +26,4 @@ jobs:
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
             DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
+            DJJ_XFJ_NEWHEADERS: ${{ secrets.DJJ_XFJ_NEWHEADERS }}
