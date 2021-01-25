@@ -14,30 +14,28 @@ import os
 网页入口（注：进入后不能再此刷新，否则会有问题，需重新输入此链接进入）
 https://h5.m.jd.com/babelDiy/Zeus/2HFSytEAN99VPmMGZ6V4EYWus1x/index.html'''
 
-
-
+osenviron={}
+djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
-djj_small_headers=''
+djj_tele_cookie=''
+
 Defalt_ShareCode=[]
+newShareCodes={}
+
+JD_API_HOST = 'https://lkyl.dianpusoft.cn/api'
 
 
-
-
-
-
-    
-    
-    
-    
 cookiesList=[]
+hdlist=[]
 result=''
-mypin=''
 mytoken=''
+username=''
 mywoB=''
 numm=0
 createAssistUserID=''
 isPurchaseShops=True
+
 
 def JD_homesmall():
    ssjj_rooms()
@@ -48,6 +46,35 @@ def JD_homesmall():
    queryByUserId()
    queryFurnituresCenterList()
    helpFriends()
+   
+def ssjj_getdata():
+   print('\n getdata')
+   global username
+   try:
+      url='https://jdhome.m.jd.com/saas/framework/encrypt/pin?appId=6d28460967bda11b78e077b66751d2b0'
+      data=json.loads(requests.post(url,headers=headers).text)
+      username=data['data']
+      #print(data)
+   except Exception as e:
+      msg=str(e)
+      print(msg)
+      
+def ssjj_gettk():
+   print('\n gettk')
+   global mytoken
+   try:
+      url='https://lkyl.dianpusoft.cn/api/user-info/login'
+      body={"body":{"client":2,"userName":username}}
+      del headers['Cookie']
+      data=json.loads(requests.post(url,headers=headers,data=json.dumps(body)).text)
+      #print(data)
+      mytoken=data['head']['token']
+      #print(mytoken)
+   except Exception as e:
+      msg=str(e)
+      print(msg)
+      
+      
 def ssjj_rooms():
    print('\n ssjj-rooms')
    try:
@@ -399,37 +426,48 @@ def TotalBean(cookies,checkck):
 
 
 
-def check():
-   print('Localtime',datetime.now(tz=tz.gettz('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S", ))
-   global djj_small_headers
+def check(flag,list):
+   vip=''
    global djj_bark_cookie
    global djj_sever_jiang
+   global djj_tele_cookie
    if "DJJ_BARK_COOKIE" in os.environ:
-     djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
+   if "DJJ_TELE_COOKIE" in os.environ:
+      djj_tele_cookie = os.environ["DJJ_TELE_COOKIE"]
    if "DJJ_SEVER_JIANG" in os.environ:
       djj_sever_jiang = os.environ["DJJ_SEVER_JIANG"]
-   if 'DJJ_SMALL_HEADERS' in os.environ:
-      djj_small_headers =os.environ["DJJ_SMALL_HEADERS"]
-      for line in djj_small_headers.split('\n'):
-        if not line:
-          continue 
-        cookiesList.append(line.strip())
-   elif djj_small_headers:
-       for line in djj_small_headers.split('\n'):
+   if flag in os.environ:
+      vip = os.environ[flag]
+   if flag in osenviron:
+      vip = osenviron[flag]
+   if vip:
+       for line in vip.split('\n'):
          if not line:
             continue 
-         cookiesList.append(line.strip())
+         list.append(line.strip())
+       return list
    else:
-     print('DTask is over.')
-     exit()
+       print(f'''【{flag}】 is empty,DTask is over.''')
+       exit()
 
-def pushmsg(title,txt,bflag=1,wflag=1):
+def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
+  try:
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
       print("\n【通知汇总】")
       purl = f'''https://api.day.app/{djj_bark_cookie}/{title}/{txt}'''
       response = requests.post(purl)
+      #print(response.text)
+   if tflag==1 and djj_tele_cookie.strip():
+      print("\n【Telegram消息】")
+      id=djj_tele_cookie[djj_tele_cookie.find('@')+1:len(djj_tele_cookie)]
+      botid=djj_tele_cookie[0:djj_tele_cookie.find('@')]
+
+      turl=f'''https://api.telegram.org/bot{botid}/sendMessage?chat_id={id}&text={title}\n{txt}'''
+
+      response = requests.get(turl)
       #print(response.text)
    if wflag==1 and djj_sever_jiang.strip():
       print("\n【微信消息】")
@@ -439,22 +477,15 @@ def pushmsg(title,txt,bflag=1,wflag=1):
     }
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
-   global result
-   print(result)
-   result =''
-    
+    #print(response.text)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def loger(m):
-   print(m)
+   #print(m)
    global result
-   result +=m+'\n'
-def gettoken(hd):
-   hd=json.dumps(hd)
-   t=hd.split(',')
-   for i in t:
-      ii=i.find('&token=')
-      if ii>0:
-        return i[ii+8:len(i)-1]
-        
+   result +=m
+
         
 def islogon(j,count):
     JD_islogn=False
@@ -480,24 +511,28 @@ def clock(func):
     
 @clock
 def start():
-   global headers,mypin,mytoken,numm
-   check()
+   global headers,mytoken,numm,cookiesList,hdlist,result
+   check('DJJ_DJJ_COOKIE',cookiesList)
+   check('DJJ_SMALL_HEADER',hdlist)
    numm=0
-   iii=0
-   for i in range(2):
+   for i in range(1):
+     result=''
      for count in cookiesList:
        numm+=1
-       iii+=1
-       print('【账号'+str(iii)+'】运行中'+'🔔'*iii)
+       print('【账号'+str(numm)+'】运行中🔔🔔🔔🔔')
      #if j!=1:
        #continue
-       headers=eval(count)
-       mytoken=gettoken(headers)
-     #headers['Cookie']=count
+       headers=eval(hdlist[0])
+       #mytoken=gettoken(headers)
+       headers['Cookie']=count
+       ssjj_getdata()
+       ssjj_gettk()
+       headers['token']=mytoken
      #if(islogon(j,count)):
        JD_homesmall()
-     print('=====:💎:第'+str(i+1)+'💎次::::=::::::')
-     if(i<1):
        time.sleep(10)
+       result+='\n'
+   print('🏆🏆🏆🏆运行完毕')
+   pushmsg('jd_xiaowo',result)
 if __name__ == '__main__':
        start()
