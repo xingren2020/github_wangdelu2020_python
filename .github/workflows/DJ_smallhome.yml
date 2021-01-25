@@ -25,4 +25,6 @@ jobs:
         env:
             DJJ_BARK_COOKIE: ${{ secrets.DJJ_BARK_COOKIE }}
             DJJ_SEVER_JIANG: ${{ secrets.DJJ_SEVER_JIANG }}
-            DJJ_SMALL_HEADERS: ${{ secrets.DJJ_SMALL_HEADERS }}
+            DJJ_TELE_COOKIE: ${{ secrets.DJJ_TELE_COOKIE }}
+            DJJ_DJJ_COOKIE: ${{ secrets.DJJ_DJJ_COOKIE }}
+            DJJ_SMALL_HEADER: ${{ secrets.DJJ_SMALL_HEADER }}
