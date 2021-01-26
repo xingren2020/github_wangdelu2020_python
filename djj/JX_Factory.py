@@ -17,7 +17,7 @@ djj_bark_cookie=''
 djj_sever_jiang=''
 djj_djj_cookie=''
 
-Defalt_ShareCode=['Q0VdTSuur3SLeSSfOW2A2Q==','v6859vuzm0wJDBqu2J9Shg==']
+Defalt_ShareCode=['Q0VdTSuur3SLeSSfOW2A2Q==','v6859vuzm0wJDBqu2J9Shg==','dr9FS50xxupUafarZE8eVw==']
 
 JD_API_HOST = 'https://m.jingxi.com'
 codeurl='http://api.turinglabs.net/api/v1/jd/jxfactory/read/'
