@@ -1014,6 +1014,7 @@ def start():
      #if j!=3:
        #continue
      #print(count)
+     result=''
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
