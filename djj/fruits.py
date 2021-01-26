@@ -9,13 +9,15 @@ import sys
 from datetime import datetime
 from dateutil import tz
 import os
-#by  红鲤鱼绿鲤鱼与驴，学习与测试用
+#by  红鲤鱼绿鲤鱼与驴，学习与测试用1.26 bug
+osenviron={}
 
 
 djj_sharecode=''
 djj_bark_cookie=''
 djj_sever_jiang=''
 djj_djj_cookie=''
+djj_tele_cookie=''
 #以上参数需要远程设置，以下为默认参数
 JD_API_HOST = 'https://api.m.jd.com/client.action'
 urlSchema = 'openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%'
@@ -27,7 +29,7 @@ result=''
 isFruitFinished=False
 jdFruitBeanCard='false'#您设置的是使用水滴换豆卡，且背包有水滴换豆卡, 跳过10次浇水任务
 Defalt_ShareCode= ['8b4f04a07a21445a9a7da6ddb4159427',
-'ae6488dc5f0c4669bfa432b9bc884191','268e797816f340bc9ad3656fa249d1a6']#读取参数djj_sharecode为空，开始读取默认参数
+'ae6488dc5f0c4669bfa432b9bc884191','268e797816f340bc9ad3656fa249d1a6','cd9c333af0bd4a118c606a251868d427']#读取参数djj_sharecode为空，开始读取默认参数
 def TotalBean(cookies,checkck):
    print('检验过期')
    signmd5=False
@@ -38,16 +40,14 @@ def TotalBean(cookies,checkck):
         "User-Agent": 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1'
       }
    try:
-       ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers).json()
-       print(ckresult)
-       if ckresult['retcode']==0:
+       ckresult= requests.get('https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New',headers=headers).text
+       if ckresult.find(checkck)>0:
            signmd5=True
            loger(f'''【京东{checkck}】''')
        else:
        	  signmd5=False
        	  msg=f'''【京东账号{checkck}】cookie已失效,请重新登录京东获取'''
-       	  print(msg)
-          pushmsg(msg)
+          pushmsg('水果账号失效',msg)
    except Exception as e:
       signmd5=False
       msg=str(e)
@@ -92,7 +92,7 @@ def jdFruit():
       ''')
       doDailyTask(farmInfo)
       getAwardInviteFriend(farmInfo)
-      
+      time.sleep(10)
       duck()
       
    except Exception as e:
@@ -125,11 +125,11 @@ def masterHelpShare(farmInfo):
         
             print(f'''【助力好友结果】: 已成功给【{helpResult['helpResult']['masterUserInfo']['nickName']}】助力''')
         
-            print(f'''给好友【${helpResult['helpResult']['masterUserInfo']['nickName']}】助力获得${helpResult['helpResult']['salveHelpAddWater']}g水滴''')
+            print(f'''给好友【{helpResult['helpResult']['masterUserInfo']['nickName']}】助力获得${helpResult['helpResult']['salveHelpAddWater']}g水滴''')
         
             helpSuccessPeoples += helpResult['helpResult']['masterUserInfo']['nickName'] + ','
         elif (helpResult['helpResult']['code'] == '8'):
-            print(f'''【助力好友结果】: 助力【{helpResult['helpResult']['masterUserInfo.nickName']}】失败，您今天助力次数已耗尽''');
+            print(f'''【助力好友结果】: 助力【{helpResult['helpResult']['masterUserInfo']['nickName']}】失败，您今天助力次数已耗尽''');
         elif helpResult['helpResult']['code'] =='9':
             print(f'''【助力好友结果】: 之前给【{helpResult['helpResult']['masterUserInfo']['nickName']}】助力过了''');
         elif helpResult['helpResult']['code'] =='10':
@@ -471,7 +471,7 @@ def getAwardInviteFriend(farmInfo):
    print('获取邀请好友奖励')
    friendList= friendListInitForFarm()
    receiveFriendInvite(farmInfo)
-   print(f'''\n今日已邀请好友{friendList['inviteFriendCount']}个 / 每日邀请上限${friendList['inviteFriendMax']}个''')
+   print(f'''\n今日已邀请好友{friendList['inviteFriendCount']}个 / 每日邀请上限{friendList['inviteFriendMax']}个''')
    if (friendList['inviteFriendCount'] > 0):
       if (friendList['inviteFriendCount']>friendList['inviteFriendGotAwardCount']):
          print('开始领取邀请好友的奖励');
@@ -646,6 +646,7 @@ def predictionFruit():
    timeArray = time.localtime(seconds)
    pretime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
    msg += f'''【预测】{tm}天之后({pretime}日)可兑换水果🍉'''
+   print(msg)
    loger(msg)
 
 
@@ -684,7 +685,7 @@ def taskInitForFarm():
      return farmTask
    except Exception as e:
       print("初始化农场任务:", str(e))
-      time.sleep(5)
+      time.sleep(10)
       taskInitForFarm()
       
 def initForFarm():
@@ -698,7 +699,7 @@ def initForFarm():
       return farmInfo
    except Exception as e:
       print("初始化农场错误:", str(e))
-      time.sleep(5)
+      time.sleep(10)
       initForFarm()
       
 def clockInInitForFarm():
@@ -827,8 +828,8 @@ def initForTurntableFarm():
  
 
 def lotteryForTurntableFarm() :
-   time.sleep(5)
-   print('等待了5秒')
+   time.sleep(10)
+   print('等待了10秒')
    body={'type': 1, 'version': 4, 'channel': 1}
    lotteryRes =iosrule(sys._getframe().f_code.co_name,body)
    return lotteryRes
@@ -934,6 +935,8 @@ def check():
      djj_bark_cookie = os.environ["DJJ_BARK_COOKIE"]
    if "DJJ_DJJ_COOKIE" in os.environ:
       djj_djj_cookie = os.environ["DJJ_DJJ_COOKIE"]
+   if "DJJ_DJJ_COOKIE" in osenviron:
+      djj_djj_cookie = osenviron["DJJ_DJJ_COOKIE"]
       for line in djj_djj_cookie.split('\n'):
         if not line:
           continue 
@@ -947,13 +950,23 @@ def check():
      print('DTask is over.')
      exit()
 
-def pushmsg(title,txt,bflag=1,wflag=1):
+def pushmsg(title,txt,bflag=1,wflag=1,tflag=1):
+  try:
    txt=urllib.parse.quote(txt)
    title=urllib.parse.quote(title)
    if bflag==1 and djj_bark_cookie.strip():
       print("\n【通知汇总】")
       purl = f'''https://api.day.app/{djj_bark_cookie}/{title}/{txt}'''
       response = requests.post(purl)
+      #print(response.text)
+   if tflag==1 and djj_tele_cookie.strip():
+      print("\n【Telegram消息】")
+      id=djj_tele_cookie[djj_tele_cookie.find('@')+1:len(djj_tele_cookie)]
+      botid=djj_tele_cookie[0:djj_tele_cookie.find('@')]
+
+      turl=f'''https://api.telegram.org/bot{botid}/sendMessage?chat_id={id}&text={title}\n{txt}'''
+
+      response = requests.get(turl)
       #print(response.text)
    if wflag==1 and djj_sever_jiang.strip():
       print("\n【微信消息】")
@@ -963,19 +976,19 @@ def pushmsg(title,txt,bflag=1,wflag=1):
     }
       body=f'''text={txt})&desp={title}'''
       response = requests.post(purl,headers=headers,data=body)
-   global result
-   print(result)
-   result =''
-    
+    #print(response.text)
+  except Exception as e:
+      msg=str(e)
+      print(msg)
 def loger(m):
-   print(m)
+   #print(m)
    global result
-   result +=m+'\n'
+   result +=m
     
 def DJJ_main():
    jdFruit()
    predictionFruit()
-   pushmsg('京东农场',result)
+   
    
    
    
@@ -992,22 +1005,28 @@ def clock(func):
     
 @clock
 def start():
+   global result
    check()
    #print(cookiesList)
    j=0
    for count in cookiesList:
      j+=1
-     #if j!=1:
+     #if j!=3:
        #continue
-     print(count)
+     #print(count)
      oldstr = count.split(';')
      for i in oldstr:
        if i.find('pin=')>=0:
-          newstr=i.strip()[i.find('pin=')+4:len(i)]
-          print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr}''')
+          newstr=urllib.parse.unquote(i.strip()[i.find('pt_pin=')+6:len(i)])
+          if j==3:
+            print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr[0:2]}''')
+          else:
+             print(f'''>>>>>>>>>【账号{str(j)}开始】{newstr}''')
      headers['Cookie']=count
      if(TotalBean(count,newstr)):
          DJJ_main()
+         pushmsg('京东农场',result)
+         time.sleep(10)
 def main_handler(event, context):
     return start()
 
