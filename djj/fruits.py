@@ -395,7 +395,7 @@ def doTenWaterAgain(farmInfo):
    print(f'''背包已有道具:\n快速浇水卡:未解锁{myCardInfoRes['fastCard']}张\n水滴翻倍卡:未解锁': {myCardInfoRes['doubleCard']}张\n水滴换京豆卡:未解锁':{myCardInfoRes['beanCard']} 张\n加签卡:未解锁' : {myCardInfoRes['signCard']} 张\n''')
    if (totalEnergy >= 100 and myCardInfoRes['doubleCard'] > 0):
     #使用翻倍水滴卡
-     userMyCardForFarm=userMyCardForFarm('doubleCard');
+     userMyCardRes=userMyCardForFarm('doubleCard');
      print(f'''使用翻倍水滴卡结果:{userMyCardRes}''')
    
 	
