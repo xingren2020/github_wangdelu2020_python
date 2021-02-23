@@ -1,0 +1,33 @@
+name: 普天同庆
+
+on:
+  #schedule:
+    #- cron: '*/35 0-15 * * *'
+  #watch:
+    #types: [started]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+         
+      - name: 'Install requirements'
+        run: pip install -r ./普天同庆/requirements.txt 
+        
+      - name: '公众号iosrule' 
+        run: python3 ./普天同庆/普天同庆.py 
+        env:
+            DJJ_TELE_COOKIE: ${{ secrets.DJJ_TELE_COOKIE }}
+            xb_main_url: ${{ secrets.xb_main_url }}
+            xb_main_hd: ${{ secrets.xb_main_hd }}
+            xb_main_bd: ${{ secrets.xb_main_bd }}
+            xb_tk:${{ secrets.xb_tk }}
+            xb_tk_bd:${{ secrets.xb_tk_bd }}
+            
