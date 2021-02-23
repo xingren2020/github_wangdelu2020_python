@@ -246,7 +246,7 @@ def start():
         allcode.append(urllist[i])
       allinone(random.choice(allcode))
       
-      for ac in range(accont):
+      for ac in range(acount):
         result=''
         for k in range(0,len(tklist)):
           body1=bdlist[0]
