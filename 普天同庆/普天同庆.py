@@ -27,7 +27,7 @@ tklist=[]
 actId1=''
 actId2=''
 actId3=''
-accont=80
+acount=2
 
 def Av(i,hd,k,key=''):
    try:
@@ -276,14 +276,14 @@ def start():
           
           
           
-          if ac!=accont-1:
+          if ac!=acount-1:
               del hd['signature']
               del hd['User-Agent']
               del hd["X-User-Agent"]
               del hd['random']
           
-          if ac==accont-1:
-              print('accont')
+          if ac==acount-1:
+              print('acount')
               Av(urllist[14],hd,(15))
               Av(urllist[15],hd,(16))
       
